@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>Profile — AgriPrice</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="app">
+<div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar" id="topbar"></header>
+
+    <main class="page-body">
+      <div class="page-head">
+        <div><h1>Profile</h1><p>Manage your account information.</p></div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:22px;">
+        <div class="profile-header">
+          <div class="profile-avatar-lg" id="profileAvatar">--</div>
+          <div>
+            <h3 id="profileFullName" style="margin-bottom:4px;">—</h3>
+            <p style="margin:0;" id="profileEmailDisplay">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="max-width:560px; margin-bottom:22px;">
+        <h3 style="margin-bottom:14px;">More</h3>
+        <div class="profile-menu-list">
+          <a class="profile-menu-item" href="crop-prices.html">
+            <span class="pm-left"><span class="pm-icon"><i class="fa-solid fa-wheat-awn"></i></span><span>Crop Prices</span></span>
+            <i class="fa-solid fa-chevron-right pm-chevron"></i>
+          </a>
+          <a class="profile-menu-item" href="historical-prices.html">
+            <span class="pm-left"><span class="pm-icon"><i class="fa-solid fa-clock-rotate-left"></i></span><span>Historical Prices</span></span>
+            <i class="fa-solid fa-chevron-right pm-chevron"></i>
+          </a>
+          <a class="profile-menu-item" href="settings.html">
+            <span class="pm-left"><span class="pm-icon"><i class="fa-solid fa-gear"></i></span><span>Settings</span></span>
+            <i class="fa-solid fa-chevron-right pm-chevron"></i>
+          </a>
+          <a class="profile-menu-item" href="index.html#contact">
+            <span class="pm-left"><span class="pm-icon"><i class="fa-solid fa-circle-question"></i></span><span>Help &amp; Support</span></span>
+            <i class="fa-solid fa-chevron-right pm-chevron"></i>
+          </a>
+          <a class="profile-menu-item" href="index.html#about">
+            <span class="pm-left"><span class="pm-icon"><i class="fa-solid fa-circle-info"></i></span><span>About</span></span>
+            <i class="fa-solid fa-chevron-right pm-chevron"></i>
+          </a>
+          <button class="profile-menu-item profile-menu-item--button" type="button" id="logoutMenuBtn">
+            <span class="pm-left"><span class="pm-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span>Logout</span></span>
+            <i class="fa-solid fa-chevron-right pm-chevron"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="max-width:560px;">
+        <h3 style="margin-bottom:18px;">Edit Information</h3>
+        <div class="auth-alert" id="profileAlert" style="display:none;"></div>
+        <form id="profileForm">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="pFirstName">First Name</label>
+              <input type="text" id="pFirstName">
+              <div class="field-error"></div>
+            </div>
+            <div class="form-group">
+              <label for="pLastName">Last Name</label>
+              <input type="text" id="pLastName">
+              <div class="field-error"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pEmail">Email Address</label>
+            <input type="email" id="pEmail">
+            <div class="field-error"></div>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script>
+  AgriLayout.init('profile.html', 'Profile');
+
+  const session = AgriStore.getSession();
+  function paint(){
+    const s = AgriStore.getSession();
+    document.getElementById('profileAvatar').textContent = AgriUtils.initials(s.firstName, s.lastName);
+    document.getElementById('profileFullName').textContent = `${s.firstName} ${s.lastName}`;
+    document.getElementById('profileEmailDisplay').textContent = s.email;
+    document.getElementById('pFirstName').value = s.firstName;
+    document.getElementById('pLastName').value = s.lastName;
+    document.getElementById('pEmail').value = s.email;
+  }
+  paint();
+
+  document.getElementById('profileForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fn = document.getElementById('pFirstName');
+    const ln = document.getElementById('pLastName');
+    const em = document.getElementById('pEmail');
+    [fn, ln, em].forEach(f => AgriUtils.clearFieldError(f.closest('.form-group')));
+
+    let valid = true;
+    if(!fn.value.trim()){ AgriUtils.setFieldError(fn.closest('.form-group'), 'First name is required.'); valid = false; }
+    if(!ln.value.trim()){ AgriUtils.setFieldError(ln.closest('.form-group'), 'Last name is required.'); valid = false; }
+    if(!AgriUtils.isValidEmail(em.value.trim())){ AgriUtils.setFieldError(em.closest('.form-group'), 'Enter a valid email address.'); valid = false; }
+
+    const current = AgriStore.getSession();
+    if(valid && em.value.trim().toLowerCase() !== current.email.toLowerCase() && AgriStore.findUserByEmail(em.value.trim())){
+      AgriUtils.setFieldError(em.closest('.form-group'), 'That email is already in use.');
+      valid = false;
+    }
+    if(!valid) return;
+
+    AgriStore.updateUser(current.email, {
+      firstName: fn.value.trim(), lastName: ln.value.trim(), email: em.value.trim()
+    });
+
+    const alertBox = document.getElementById('profileAlert');
+    alertBox.className = 'auth-alert success';
+    alertBox.style.display = 'flex';
+    alertBox.innerHTML = '<i class="fa-solid fa-circle-check"></i> <div>Profile updated successfully.</div>';
+    AgriUtils.toast('Your profile has been updated.', 'success', 'Saved');
+    AgriLayout.init('profile.html', 'Profile'); // refresh topbar title after save
+    paint();
+  });
+
+  document.getElementById('logoutMenuBtn').addEventListener('click', () => {
+    document.getElementById('logoutOverlay')?.classList.add('show');
+  });
+</script>
+</body>
+</html>

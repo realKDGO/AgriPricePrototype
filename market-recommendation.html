@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>Market Recommendation — AgriPrice</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="app">
+<div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar" id="topbar"></header>
+
+    <main class="page-body">
+      <div class="page-head">
+        <div><h1>Market Recommendation</h1><p>Find the most profitable market for your crop right now.</p></div>
+      </div>
+
+      <div class="card market-today-card" id="marketSpotlightCard" style="display:none; margin-bottom:22px;">
+        <div class="mt-header">
+          <div class="mt-icon"><i class="fa-solid fa-store"></i></div>
+          <div>
+            <div class="mt-market-sub">Best Market Today</div>
+            <div class="mt-market-name" id="spotlightMarketName">—</div>
+          </div>
+        </div>
+        <div class="mt-stats-row">
+          <div class="mt-stat">
+            <div class="mt-stat-val" id="spotlightCropsCount">0</div>
+            <div class="mt-stat-lab">Crops Increased</div>
+          </div>
+          <div class="mt-stat">
+            <div class="mt-stat-val" id="spotlightDistance">0 km</div>
+            <div class="mt-stat-lab">Distance</div>
+          </div>
+          <div class="mt-stat">
+            <div class="mt-stat-val" id="spotlightTransport">₱0</div>
+            <div class="mt-stat-lab">Transport Cost</div>
+          </div>
+        </div>
+        <div class="card-head" style="margin-bottom:12px;"><h3>Crops Contributing to This Recommendation</h3></div>
+        <div id="spotlightCropsList"></div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:22px;">
+        <div class="forecast-controls">
+          <div class="form-group">
+            <label for="recCrop">Crop</label>
+            <select id="recCrop"></select>
+          </div>
+          <div class="form-group">
+            <label for="recQty">Quantity (kg)</label>
+            <input type="number" id="recQty" min="1" value="100">
+          </div>
+          <button class="btn btn-primary" id="findMarketBtn">Find Best Market</button>
+        </div>
+      </div>
+
+      <div class="card card-pad" id="recCardWrap" style="display:none;">
+        <div class="rec-card">
+          <div class="rec-market-badge"><i class="fa-solid fa-store"></i></div>
+          <div class="rec-details">
+            <span class="section-tag">Recommended Market</span>
+            <h3 id="recMarketName">—</h3>
+            <span class="status-pill high" id="recStatus">Highly Recommended</span>
+          </div>
+        </div>
+
+        <div class="result-metrics">
+          <div class="metric-box">
+            <div class="m-label">Selling Price / kg</div>
+            <div class="m-value" id="recSellPrice">₱0</div>
+          </div>
+          <div class="metric-box soil">
+            <div class="m-label">Transport Cost</div>
+            <div class="m-value" id="recTransport">₱0</div>
+          </div>
+          <div class="metric-box amber">
+            <div class="m-label">Estimated Profit</div>
+            <div class="m-value" id="recProfit">₱0</div>
+          </div>
+          <div class="metric-box">
+            <div class="m-label">Profit Margin</div>
+            <div class="m-value" id="recMargin">0%</div>
+          </div>
+        </div>
+
+        <div class="card-head"><h3>All Markets Compared</h3></div>
+        <table class="data-table">
+          <thead><tr><th>Market</th><th>Price / kg</th><th>Transport</th><th>Est. Profit</th><th>Status</th></tr></thead>
+          <tbody id="recTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" id="recEmpty">
+        <div class="es-ic"><i class="fa-solid fa-compass"></i></div>
+        <p style="margin:0;">Select a crop and quantity, then find the best market to sell in.</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script>
+  AgriLayout.init('market-recommendation.html', 'Market Recommendation');
+
+  const recCrop = document.getElementById('recCrop');
+  recCrop.innerHTML = AgriData.CROPS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+  // Deep-link support: market-recommendation.html?market=antipolo
+  // Shows the market's "Best Market Today" spotlight with contributing crops.
+  const urlParams = new URLSearchParams(window.location.search);
+  const spotlightMarketId = urlParams.get('market');
+  if(spotlightMarketId){
+    const market = AgriData.findMarketById(spotlightMarketId);
+    const risingCrops = AgriData.getRisingCropsForMarket(spotlightMarketId);
+    if(market){
+      document.getElementById('marketSpotlightCard').style.display = 'block';
+      document.getElementById('spotlightMarketName').textContent = market.name;
+      document.getElementById('spotlightCropsCount').textContent = risingCrops.length;
+      document.getElementById('spotlightDistance').textContent = `${market.distanceKm} km`;
+      document.getElementById('spotlightTransport').textContent = AgriUtils.pesoRound(market.transportCost);
+
+      const listEl = document.getElementById('spotlightCropsList');
+      listEl.innerHTML = risingCrops.length
+        ? risingCrops.map(r => {
+            const cropImage = AgriData.getCropImage(r.crop);
+            return `
+              <div class="mini-crop-row">
+                <span class="crop-name"><span class="crop-image-chip"><img src="${cropImage}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</span>
+                <span class="badge up"><i class="fa-solid fa-arrow-trend-up"></i> +${r.change}% · ${AgriUtils.pesoRound(r.price)}/kg</span>
+              </div>
+            `;
+          }).join('')
+        : '<p style="margin:0; font-size:.88rem;">No rising-price crops recorded for this market today.</p>';
+
+      setTimeout(() => {
+        document.getElementById('marketSpotlightCard')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      }, 150);
+    }
+  }
+
+  const basePrices = { rice:45, tomato:65, eggplant:58, onion:90, corn:37, cabbage:52, garlic:130, banana:48 };
+
+  function buildMarketOptions(cropId, qty){
+    return AgriData.MARKETS.map(m => {
+      const priceVariance = AgriUtils.randomBetween(-6, 8);
+      const basePrice = (basePrices[cropId] || 50) + priceVariance;
+      const price = Math.max(basePrice, 10);
+      const distanceFactor = AgriUtils.randomBetween(3, 14);
+      const transport = Math.round(distanceFactor * (qty / 50 + 1) * 10) / 10;
+      const gross = price * qty;
+      const profit = gross - transport;
+      const margin = (profit / gross) * 100;
+      const distanceKm = m.distanceKm;
+      const score = (price * 1.25) + (profit * 0.85) + (margin * 0.9) - (transport * 0.2) - (distanceKm * 0.12);
+      return { market: m.name, price, transport, profit, margin, distanceKm, score };
+    }).sort((a,b) => b.score - a.score);
+  }
+
+  function statusForRank(rank, total){
+    if(rank === 1) return { label:'Highly Recommended', cls:'high' };
+    if(rank === 2) return { label:'Recommended', cls:'mid' };
+    if(rank === 3) return { label:'Average', cls:'average' };
+    return { label:'Less Recommended', cls:'low' };
+  }
+
+  document.getElementById('findMarketBtn').addEventListener('click', () => {
+    const cropId = recCrop.value;
+    const crop = AgriData.CROPS.find(c => c.id === cropId);
+    const qty = Math.max(Number(document.getElementById('recQty').value) || 1, 1);
+
+    const results = buildMarketOptions(cropId, qty);
+    const best = results[0];
+    const bestStatus = statusForRank(1, results.length);
+
+    document.getElementById('recCardWrap').style.display = 'block';
+    document.getElementById('recEmpty').style.display = 'none';
+
+    document.getElementById('recMarketName').textContent = `${best.market} — ${crop.name}`;
+    const statusEl = document.getElementById('recStatus');
+    statusEl.textContent = bestStatus.label;
+    statusEl.className = 'status-pill ' + bestStatus.cls;
+
+    document.getElementById('recSellPrice').textContent = AgriUtils.pesoRound(best.price);
+    document.getElementById('recTransport').textContent = AgriUtils.pesoRound(best.transport);
+    document.getElementById('recProfit').textContent = AgriUtils.pesoRound(best.profit);
+    document.getElementById('recMargin').textContent = Math.round(best.margin) + '%';
+
+    const tbody = document.getElementById('recTableBody');
+    tbody.innerHTML = results.map((r, idx) => {
+      const s = statusForRank(idx + 1, results.length);
+      return `
+        <tr>
+          <td>${r.market}</td>
+          <td class="price-mono">${AgriUtils.pesoRound(r.price)}</td>
+          <td class="price-mono">${AgriUtils.pesoRound(r.transport)}</td>
+          <td class="price-mono">${AgriUtils.pesoRound(r.profit)}</td>
+          <td><span class="status-pill ${s.cls}">${s.label}</span></td>
+        </tr>
+      `;
+    }).join('');
+
+    AgriUtils.toast(`${best.market} offers the best estimated profit.`, 'success', 'Recommendation ready');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>Crop Prices — AgriPrice</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="app">
+<div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar" id="topbar"></header>
+
+    <main class="page-body">
+      <div class="page-head">
+        <div><h1>Crop Prices</h1><p>Current prices across every tracked market in Rizal Province.</p></div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="table-toolbar">
+          <div class="search-box">
+            <span class="s-ic"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <input type="text" id="searchInput" placeholder="Search crop or market…">
+          </div>
+          <div class="toolbar-filters">
+            <select id="cropFilter"><option value="">All Crops</option></select>
+            <select id="marketFilter"><option value="">All Markets</option></select>
+            <select id="trendFilter">
+              <option value="">All Trends</option>
+              <option value="up">Increasing</option>
+              <option value="down">Decreasing</option>
+              <option value="stable">Stable</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-key="crop">Crop</th>
+              <th data-key="market">Market</th>
+              <th data-key="price">Price / kg</th>
+              <th data-key="change">Change</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+
+        <div class="card-list-mobile" id="mobileList"></div>
+
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <div class="es-ic"><i class="fa-solid fa-seedling"></i></div>
+          <p style="margin:0;">No crops match your search. Try a different keyword or filter.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script>
+  AgriLayout.init('crop-prices.html', 'Crop Prices');
+
+  let rows = [...AgriData.CROP_PRICES];
+  let sortKey = null, sortAsc = true;
+
+  const cropFilter = document.getElementById('cropFilter');
+  const marketFilter = document.getElementById('marketFilter');
+  [...new Set(AgriData.CROP_PRICES.map(r => r.crop))].forEach(c => cropFilter.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`));
+  [...new Set(AgriData.CROP_PRICES.map(r => r.market))].forEach(m => marketFilter.insertAdjacentHTML('beforeend', `<option value="${m}">${m}</option>`));
+
+  function trendIcon(t){ return t === 'up' ? '<i class="fa-solid fa-arrow-trend-up"></i>' : t === 'down' ? '<i class="fa-solid fa-arrow-trend-down"></i>' : '<i class="fa-solid fa-minus"></i>'; }
+  function cropImage(cropName){ return AgriData.getCropImage(cropName); }
+
+  function render(){
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const cf = cropFilter.value, mf = marketFilter.value, tf = document.getElementById('trendFilter').value;
+
+    let filtered = rows.filter(r =>
+      (!q || r.crop.toLowerCase().includes(q) || r.market.toLowerCase().includes(q)) &&
+      (!cf || r.crop === cf) && (!mf || r.market === mf) && (!tf || r.trend === tf)
+    );
+
+    if(sortKey){
+      filtered.sort((a,b) => {
+        let av = a[sortKey], bv = b[sortKey];
+        if(typeof av === 'string'){ av = av.toLowerCase(); bv = bv.toLowerCase(); }
+        if(av < bv) return sortAsc ? -1 : 1;
+        if(av > bv) return sortAsc ? 1 : -1;
+        return 0;
+      });
+    }
+
+    document.querySelectorAll('.data-table th').forEach(th => th.classList.remove('sorted','asc'));
+    if(sortKey){
+      const th = document.querySelector(`.data-table th[data-key="${sortKey}"]`);
+      th.classList.add('sorted'); if(sortAsc) th.classList.add('asc');
+    }
+
+    const tbody = document.getElementById('tableBody');
+    const mobileList = document.getElementById('mobileList');
+    const emptyState = document.getElementById('emptyState');
+    tbody.innerHTML = ''; mobileList.innerHTML = '';
+
+    emptyState.style.display = filtered.length ? 'none' : 'block';
+
+    filtered.forEach(r => {
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td><div class="cell-crop"><span class="crop-icon-badge"><img src="${cropImage(r.crop)}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</div></td>
+          <td>${r.market}</td>
+          <td class="price-mono">${AgriUtils.pesoRound(r.price)}</td>
+          <td><span class="badge ${r.trend}">${trendIcon(r.trend)} ${Math.abs(r.change)}%</span></td>
+        </tr>
+      `);
+      mobileList.insertAdjacentHTML('beforeend', `
+        <div class="mobile-row-card">
+          <div class="mrc-top">
+            <div class="cell-crop"><span class="crop-icon-badge"><img src="${cropImage(r.crop)}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</div>
+            <span class="badge ${r.trend}">${trendIcon(r.trend)} ${Math.abs(r.change)}%</span>
+          </div>
+          <div class="mrc-grid">
+            <div>Market<strong>${r.market}</strong></div>
+            <div>Price / kg<strong>${AgriUtils.pesoRound(r.price)}</strong></div>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  document.getElementById('searchInput').addEventListener('input', AgriUtils.debounce(render, 200));
+  [cropFilter, marketFilter, document.getElementById('trendFilter')].forEach(el => el.addEventListener('change', render));
+  document.querySelectorAll('.data-table th').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      if(sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; }
+      render();
+    });
+  });
+
+  render();
+</script>
+</body>
+</html>

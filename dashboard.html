@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>Dashboard — AgriPrice</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="app">
+<div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main-content">
+    <header class="topbar" id="topbar"></header>
+
+    <main class="page-body">
+      <div class="page-head">
+        <div>
+          <h1>Welcome back, <span id="welcomeName">Farmer</span></h1>
+          <p>Here's what's happening across Rizal Province markets today.</p>
+        </div>
+      </div>
+
+      <!-- Featured Crop Update -->
+      <div class="card featured-crop-card" style="margin-bottom:20px;">
+        <div class="featured-crop-grid">
+          <div class="fc-left">
+            <span class="fc-eyebrow"><i class="fa-solid fa-arrow-trend-up"></i> Featured Crop Update</span>
+            <div class="fc-crop-row">
+              <div class="fc-crop-icon" id="fcCropIcon"><i class="fa-solid fa-seedling"></i></div>
+              <div>
+                <h3 class="fc-crop-name" id="fcCropName">—</h3>
+                <div class="fc-crop-market"><i class="fa-solid fa-location-dot"></i> <span id="fcMarketName">—</span></div>
+              </div>
+            </div>
+            <div class="fc-price-row">
+              <div class="fc-price-block new">
+                <div class="fc-price-label">Updated Price</div>
+                <div class="fc-price-value" id="fcNewPrice">₱0</div>
+              </div>
+              <div class="fc-increase-pill"><i class="fa-solid fa-arrow-up"></i> <span id="fcPctChange">+0%</span></div>
+            </div>
+          </div>
+          <div class="fc-right">
+            <div class="fc-right-label">30-Day Trend</div>
+            <div class="fc-mini-chart-wrap"><canvas id="fcSparkline"></canvas></div>
+            <div class="fc-actions">
+              <a href="forecasting.html" id="fcViewForecastBtn" class="btn btn-primary btn-sm btn-block">View Forecast <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insight Card -->
+      <div class="card insight-card" style="margin-bottom:20px;">
+        <div class="insight-icon"><i class="fa-solid fa-lightbulb"></i></div>
+        <div class="insight-body">
+          <h3>Market Insight</h3>
+          <p id="insightText">Prices are being monitored closely across Rizal Province markets this week.</p>
+          <a href="forecasting.html" id="insightLearnMoreBtn" class="btn btn-outline btn-sm">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <!-- Best Market Today -->
+      <div class="card market-today-card">
+        <div class="mt-header">
+          <div class="mt-icon"><i class="fa-solid fa-store"></i></div>
+          <div>
+            <div class="mt-market-sub">Best Market Today</div>
+            <div class="mt-market-name" id="mtMarketName">—</div>
+          </div>
+        </div>
+        <div class="mt-stats-row">
+          <div class="mt-stat">
+            <div class="mt-stat-val" id="mtCropsIncreased">0</div>
+            <div class="mt-stat-lab">Crops Increased</div>
+          </div>
+          <div class="mt-stat">
+            <div class="mt-stat-val" id="mtDistance">0 km</div>
+            <div class="mt-stat-lab">Distance</div>
+          </div>
+          <div class="mt-stat">
+            <div class="mt-stat-val" id="mtTransport">₱0</div>
+            <div class="mt-stat-lab">Transport Cost</div>
+          </div>
+        </div>
+        <a href="market-recommendation.html" id="mtViewMarketBtn" class="btn btn-primary btn-block">View Market <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

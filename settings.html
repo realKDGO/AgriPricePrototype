@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>Settings — AgriPrice</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="app">
+<div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar" id="topbar"></header>
+
+    <main class="page-body">
+      <div class="page-head">
+        <div><h1>Settings</h1><p>Control how AgriPrice looks and behaves for you.</p></div>
+      </div>
+
+      <div class="settings-layout">
+        <div class="settings-grid">
+          <button class="settings-card" type="button" data-setting="profile">
+            <span class="settings-card-left">
+              <span class="settings-card-icon"><i class="fa-solid fa-user"></i></span>
+              <span>
+                <span class="settings-card-title">Profile Information</span>
+                <span class="settings-card-desc">View your account details and update your profile.</span>
+              </span>
+            </span>
+            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
+          </button>
+
+          <button class="settings-card" type="button" data-setting="password">
+            <span class="settings-card-left">
+              <span class="settings-card-icon"><i class="fa-solid fa-lock"></i></span>
+              <span>
+                <span class="settings-card-title">Change Password</span>
+                <span class="settings-card-desc">Update your current password securely.</span>
+              </span>
+            </span>
+            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
+          </button>
+
+          <button class="settings-card" type="button" data-setting="notifications">
+            <span class="settings-card-left">
+              <span class="settings-card-icon"><i class="fa-solid fa-bell"></i></span>
+              <span>
+                <span class="settings-card-title">Notifications</span>
+                <span class="settings-card-desc">Manage alerts and market updates.</span>
+              </span>
+            </span>
+            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
+          </button>
+
+          <button class="settings-card" type="button" data-setting="appearance">
+            <span class="settings-card-left">
+              <span class="settings-card-icon"><i class="fa-solid fa-palette"></i></span>
+              <span>
+                <span class="settings-card-title">Appearance</span>
+                <span class="settings-card-desc">Switch themes and visual preference.</span>
+              </span>
+            </span>
+            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
+          </button>
+
+          <button class="settings-card" type="button" data-setting="language">
+            <span class="settings-card-left">
+              <span class="settings-card-icon"><i class="fa-solid fa-language"></i></span>
+              <span>
+                <span class="settings-card-title">Language</span>
+                <span class="settings-card-desc">Choose your display language.</span>
+              </span>
+            </span>
+            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
+          </button>
+
+          <button class="settings-card" type="button" data-setting="about">
+            <span class="settings-card-left">
+              <span class="settings-card-icon"><i class="fa-solid fa-circle-info"></i></span>
+              <span>
+                <span class="settings-card-title">About</span>
+                <span class="settings-card-desc">Learn more about AgriPrice.</span>
+              </span>
+            </span>
+            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
+          </button>
+
+          <button class="settings-card settings-card--danger" type="button" data-setting="logout">
+            <span class="settings-card-left">
+              <span class="settings-card-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+              <span>
+                <span class="settings-card-title">Logout</span>
+                <span class="settings-card-desc">Sign out of your current session.</span>
+              </span>
+            </span>
+            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="settings-modal-overlay" id="settingsModalOverlay" style="display:none;">
+  <div class="settings-modal">
+    <div class="settings-modal-header">
+      <h3 id="settingsModalTitle" style="margin:0;">Settings</h3>
+      <button class="settings-modal-close" id="closeSettingsModal" type="button" aria-label="Close settings modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div id="settingsModalBody"></div>
+  </div>
+</div>
+
+<div class="settings-modal-overlay" id="profileEditOverlay" style="display:none;">
+  <div class="settings-modal">
+    <div class="settings-modal-header">
+      <h3 style="margin:0;">Edit Profile</h3>
+      <button class="settings-modal-close" id="closeProfileEdit" type="button" aria-label="Close edit profile">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <form id="profileEditForm" class="settings-modal-form">
+      <div class="form-group">
+        <label for="editFirstName">First Name</label>
+        <input type="text" id="editFirstName">
+      </div>
+      <div class="form-group">
+        <label for="editLastName">Last Name</label>
+        <input type="text" id="editLastName">
+      </div>
+      <div class="form-group">
+        <label for="editPassword">Password</label>
+        <input type="password" id="editPassword" placeholder="Enter a new password">
+      </div>
+      <div class="field-hint">Email address remains unchanged.</div>
+      <div class="settings-modal-actions">
+        <button type="button" class="btn btn-outline" id="cancelProfileEdit">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script>
+  AgriLayout.init('settings.html', 'Settings');
+
+  const session = AgriStore.getSession();
+  const settingsModalOverlay = document.getElementById('settingsModalOverlay');
+  const settingsModalBody = document.getElementById('settingsModalBody');
+  const settingsModalTitle = document.getElementById('settingsModalTitle');
+  const profileEditOverlay = document.getElementById('profileEditOverlay');
+
+  function initialsForSession(){
+    return AgriUtils.initials(session?.firstName, session?.lastName);
+  }
+
+  function openSettingsModal(setting){
+    const prefs = AgriStore.getPrefs();
+    let title = 'Settings';
+    let body = '';
+
+    if(setting === 'profile'){
+      title = 'Profile Information';
+      body = `
+        <div class="settings-modal-profile">
+          <div class="profile-avatar-lg">${initialsForSession()}</div>
+          <div>
+            <div class="settings-modal-profile-name">${session?.firstName || ''} ${session?.lastName || ''}</div>
+            <div class="settings-modal-profile-email">${session?.email || '—'}</div>
+          </div>
+        </div>
+        <div class="settings-modal-subtitle">Email address is view-only.</div>
+        <div class="settings-modal-actions">
+          <button class="btn btn-outline" type="button" id="openProfileEditFromModal">Edit Profile</button>
+        </div>
+      `;
+    }
+
+    if(setting === 'password'){
+      title = 'Change Password';
+      body = `
+        <form id="passwordForm" class="settings-modal-form">
+          <div class="form-group">
+            <label for="currentPass">Current Password</label>
+            <div class="input-icon-field pass-field">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="currentPass">
+              <button type="button" class="pass-toggle" data-target="currentPass"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <div class="field-error"></div>
+          </div>
+          <div class="form-group">
+            <label for="newPass">New Password</label>
+            <div class="input-icon-field pass-field">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="newPass">
+              <button type="button" class="pass-toggle" data-target="newPass"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <div class="field-hint">Use at least 8 characters.</div>
+            <div class="field-error"></div>
+          </div>
+          <div class="form-group">
+            <label for="confirmNewPass">Confirm New Password</label>
+            <div class="input-icon-field pass-field">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="confirmNewPass">
+              <button type="button" class="pass-toggle" data-target="confirmNewPass"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <div class="field-error"></div>
+          </div>
+          <div class="settings-modal-actions">
+            <button type="submit" class="btn btn-primary">Update Password</button>
+          </div>
+        </form>
+      `;
+    }
+
+    if(setting === 'notifications'){
+      title = 'Notifications';
+      body = `
+        <div class="settings-row settings-row--modal">
+          <div>
+            <div class="sr-label">Price Alerts</div>
+            <div class="sr-desc">Get notified when significant price movements happen.</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="notifToggle" ${prefs.notifications !== false ? 'checked' : ''}><span class="slider"></span></label>
+        </div>
+      `;
+    }
+
+    if(setting === 'appearance'){
+      title = 'Appearance';
+      body = `
+        <div class="settings-row settings-row--modal">
+          <div>
+            <div class="sr-label">Dark Mode</div>
+            <div class="sr-desc">Switch to a low-light color theme.</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="darkModeToggle" ${prefs.darkMode ? 'checked' : ''}><span class="slider"></span></label>
+        </div>
+      `;
+    }
+
+    if(setting === 'language'){
+      title = 'Language';
+      body = `
+        <div class="settings-row settings-row--modal">
+          <div>
+            <div class="sr-label">Display Language</div>
+            <div class="sr-desc">Choose the interface language used in the prototype.</div>
+          </div>
+          <select id="languageSelect" style="max-width:170px;">
+            <option value="en" ${prefs.language === 'en' ? 'selected' : ''}>English</option>
+            <option value="fil" ${prefs.language === 'fil' ? 'selected' : ''}>Filipino</option>
+            <option value="ceb" ${prefs.language === 'ceb' ? 'selected' : ''}>Cebuano</option>
+          </select>
+        </div>
+      `;
+    }
+
+    if(setting === 'about'){
+      title = 'About';
+      body = `
+        <div class="settings-about-copy">
+          <p>AgriPrice helps Rizal farmers and traders compare crop prices, understand market trends, and estimate profit before selling.</p>
+          <p>This prototype is designed for fast, informed crop-selling decisions using realistic sample data.</p>
+        </div>
+      `;
+    }
+
+    if(setting === 'logout'){
+      title = 'Logout';
+      body = `
+        <div class="settings-logout-copy">
+          <p>Are you sure you want to log out of your current AgriPrice session?</p>
+        </div>
+        <div class="settings-modal-actions">
+          <button class="btn btn-danger btn-block" type="button" id="confirmLogoutFromSettings">Logout</button>
+        </div>
+      `;
+    }
+
+    settingsModalTitle.textContent = title;
+    settingsModalBody.innerHTML = body;
+    settingsModalOverlay.style.display = 'flex';
+
+    if(setting === 'profile'){
+      document.getElementById('openProfileEditFromModal').addEventListener('click', () => {
+        settingsModalOverlay.style.display = 'none';
+        openProfileEditModal();
+      });
+    }
+
+    if(setting === 'password'){
+      document.getElementById('passwordForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cur = document.getElementById('currentPass');
+        const next = document.getElementById('newPass');
+        const conf = document.getElementById('confirmNewPass');
+        [cur, next, conf].forEach(f => AgriUtils.clearFieldError(f.closest('.form-group')));
+
+        const user = AgriStore.findUserByEmail(session.email);
+        let valid = true;
+        if(!cur.value){ AgriUtils.setFieldError(cur.closest('.form-group'), 'Enter your current password.'); valid = false; }
+        else if(user.password !== cur.value){ AgriUtils.setFieldError(cur.closest('.form-group'), 'Current password is incorrect.'); valid = false; }
+
+        if(!next.value){ AgriUtils.setFieldError(next.closest('.form-group'), 'Enter a new password.'); valid = false; }
+        else if(!AgriUtils.isValidPassword(next.value)){ AgriUtils.setFieldError(next.closest('.form-group'), 'Password must be at least 8 characters.'); valid = false; }
+
+        if(conf.value !== next.value){ AgriUtils.setFieldError(conf.closest('.form-group'), 'Passwords do not match.'); valid = false; }
+
+        if(!valid) return;
+
+        AgriStore.updateUser(session.email, { password: next.value });
+        AgriUtils.toast('Your password has been changed.', 'success');
+        closeSettingsModal();
+        e.target.reset();
+      });
+    }
+
+    if(setting === 'notifications'){
+      document.getElementById('notifToggle').addEventListener('change', () => {
+        const p = AgriStore.getPrefs();
+        p.notifications = document.getElementById('notifToggle').checked;
+        AgriStore.savePrefs(p);
+        AgriUtils.toast('Notifications preference updated.', 'success');
+      });
+    }
+
+    if(setting === 'appearance'){
+      document.getElementById('darkModeToggle').addEventListener('change', () => {
+        const p = AgriStore.getPrefs();
+        p.darkMode = document.getElementById('darkModeToggle').checked;
+        AgriStore.savePrefs(p);
+        AgriLayout.applyDarkMode();
+        AgriUtils.toast(document.getElementById('darkModeToggle').checked ? 'Dark mode enabled.' : 'Dark mode disabled.', 'success');
+      });
+    }
+
+    if(setting === 'language'){
+      document.getElementById('languageSelect').addEventListener('change', () => {
+        const p = AgriStore.getPrefs();
+        p.language = document.getElementById('languageSelect').value;
+        AgriStore.savePrefs(p);
+        AgriUtils.toast('Language preference saved. (UI only in this prototype)', 'success');
+      });
+    }
+
+    if(setting === 'logout'){
+      document.getElementById('confirmLogoutFromSettings').addEventListener('click', () => {
+        document.getElementById('logoutOverlay')?.classList.add('show');
+        closeSettingsModal();
+      });
+    }
+
+    document.querySelectorAll('.pass-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.innerHTML = show ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+      });
+    });
+  }
+
+  function closeSettingsModal(){ settingsModalOverlay.style.display = 'none'; }
+
+  document.querySelectorAll('.settings-card').forEach(card => {
+    card.addEventListener('click', () => openSettingsModal(card.dataset.setting));
+  });
+
+  document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
+  settingsModalOverlay.addEventListener('click', (e) => {
+    if(e.target === settingsModalOverlay) closeSettingsModal();
+  });
+
+  function openProfileEditModal(){
+    const s = AgriStore.getSession();
+    document.getElementById('editFirstName').value = s?.firstName || '';
+    document.getElementById('editLastName').value = s?.lastName || '';
+    document.getElementById('editPassword').value = '';
+    profileEditOverlay.style.display = 'flex';
+  }
+  function closeProfileEditModal(){ profileEditOverlay.style.display = 'none'; }
+
+  document.getElementById('closeProfileEdit').addEventListener('click', closeProfileEditModal);
+  document.getElementById('cancelProfileEdit').addEventListener('click', closeProfileEditModal);
+  profileEditOverlay.addEventListener('click', (e) => { if(e.target === profileEditOverlay) closeProfileEditModal(); });
+
+  document.getElementById('profileEditForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const firstName = document.getElementById('editFirstName').value.trim();
+    const lastName = document.getElementById('editLastName').value.trim();
+    const password = document.getElementById('editPassword').value.trim();
+
+    if(!firstName || !lastName){
+      AgriUtils.toast('First name and last name are required.', 'error');
+      return;
+    }
+    if(password && !AgriUtils.isValidPassword(password)){
+      AgriUtils.toast('Password must be at least 8 characters.', 'error');
+      return;
+    }
+
+    AgriStore.updateUser(session.email, {
+      firstName,
+      lastName,
+      ...(password ? { password } : {})
+    });
+
+    AgriUtils.toast('Profile updated successfully.', 'success', 'Saved');
+    closeProfileEditModal();
+    window.location.reload();
+  });
+</script>
+</body>
+</html>

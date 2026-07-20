@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>AgriPrice — Crop Price Forecasting for Rizal Province</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<nav class="landing-nav">
+  <div class="container">
+    <a href="index.html" class="brand"><span class="brand-mark"><img src="images/logo.png" alt="AgriPrice logo"></span> AgriPrice</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+      <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div id="mobileNavScrim" class="overlay-scrim"></div>
+<div id="mobileNavDrawer" style="position:fixed; top:0; right:-300px; width:280px; height:100vh; background:var(--forest-dark); z-index:200; transition:right .3s ease; padding:26px; display:flex; flex-direction:column; gap:6px;">
+  <button id="mobileNavClose" style="align-self:flex-end; background:none; border:none; color:#fff; font-size:1.3rem; margin-bottom:14px;"><i class="fa-solid fa-xmark"></i></button>
+  <a href="#features" style="color:rgba(255,255,255,.85); padding:12px 4px; font-weight:500;">Features</a>
+  <a href="#about" style="color:rgba(255,255,255,.85); padding:12px 4px; font-weight:500;">About</a>
+  <a href="#contact" style="color:rgba(255,255,255,.85); padding:12px 4px; font-weight:500;">Contact</a>
+  <hr style="border-color:rgba(255,255,255,.12); width:100%; margin:14px 0;">
+  <a href="login.html" class="btn btn-outline btn-block" style="border-color:rgba(255,255,255,.3); color:#fff; margin-bottom:10px;">Login</a>
+  <a href="register.html" class="btn btn-primary btn-block">Get Started</a>
+</div>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-copy">
+      <span class="eyebrow">Rizal Province · Market Intelligence</span>
+      <h1>Know tomorrow's crop prices, <em>today.</em></h1>
+      <p class="hero-sub">AgriPrice helps Rizal's farmers and traders forecast crop prices, compare markets, and estimate profit before harvest — so every selling decision is backed by data, not guesswork.</p>
+      <div class="hero-actions">
+        <a href="register.html" class="btn btn-primary">Get Started Free</a>
+        <a href="#features" class="btn btn-outline">See how it works</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong>7</strong><span>Local Markets Tracked</span></div>
+        <div><strong>8</strong><span>Core Crops Covered</span></div>
+        <div><strong>91.4%</strong><span>Forecast Accuracy</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="floaty-badge b1"><strong>+5.1%</strong>Onion, this week</div>
+      <div class="forecast-card">
+        <div class="forecast-card-head">
+          <h4>Today's Crop Prices</h4>
+          <span class="trend-pill">Live in Rizal</span>
+        </div>
+        <div class="mini-crop-row"><span class="crop-name"><span class="crop-dot" style="background:#2D7D52"></span><i class="fa-solid fa-wheat-awn"></i> Rice — Antipolo</span><span class="price">₱45</span></div>
+        <div class="mini-crop-row"><span class="crop-name"><span class="crop-dot" style="background:#DA9A34"></span><i class="fa-solid fa-apple-whole"></i> Tomato — Cainta</span><span class="price">₱65</span></div>
+        <div class="mini-crop-row"><span class="crop-name"><span class="crop-dot" style="background:#7A4B27"></span><i class="fa-solid fa-carrot"></i> Eggplant — Binangonan</span><span class="price">₱58</span></div>
+        <div class="mini-crop-row"><span class="crop-name"><span class="crop-dot" style="background:#8FD4AC"></span><i class="fa-solid fa-seedling"></i> Onion — Taytay</span><span class="price">₱90</span></div>
+      </div>
+      <div class="floaty-badge b2"><strong>₱37</strong>Corn, Angono</div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Features</span>
+      <h2>Everything a Rizal farmer needs to sell smarter</h2>
+      <p>From live market prices to profit calculators, AgriPrice brings the whole decision-making process into one place.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <h3>Price Forecasting</h3>
+        <p>Project crop prices 1, 3, or 6 months ahead with trend and confidence indicators for every crop.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-compass"></i></div>
+        <h3>Market Recommendation</h3>
+        <p>Compare selling price against transport cost across Rizal markets to find your most profitable outlet.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-calculator"></i></div>
+        <h3>Profit Estimation</h3>
+        <p>Instantly calculate gross income, transport expense, and net profit before you commit to a harvest sale.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <h3>Historical Prices</h3>
+        <p>Browse searchable price history across every crop and market to understand seasonal patterns.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-chart-column"></i></div>
+        <h3>Reports &amp; Analytics</h3>
+        <p>See highest, lowest, and average prices, plus the most-sold crop and monthly trend at a glance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-bell"></i></div>
+        <h3>Real-Time Updates</h3>
+        <p>Get notified the moment prices shift meaningfully in the markets you care about.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section about-section" id="about">
+  <div class="container about-grid">
+    <div>
+      <span class="section-tag">About AgriPrice</span>
+      <h2>Built for Rizal's agricultural community</h2>
+      <p>Rizal Province's farmers and traders move crops through markets in Antipolo, Cainta, Binangonan, Taytay, Angono, Rodriguez, and Teresa every day — often without visibility into where prices are trending. AgriPrice was designed as a decision-support reference to close that gap.</p>
+      <ul class="about-list">
+        <li><span class="check"><i class="fa-solid fa-check"></i></span> Localized to Rizal Province markets and crops</li>
+        <li><span class="check"><i class="fa-solid fa-check"></i></span> No guesswork — data-backed forecast trends</li>
+        <li><span class="check"><i class="fa-solid fa-check"></i></span> Simple enough for daily use in the field</li>
+      </ul>
+    </div>
+    <div class="about-figure">
+      <span class="ring r1"></span>
+      <span class="ring r2"></span>
+      <div class="center-num"><strong>7</strong><span>Markets in Rizal</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="container contact-grid">
+    <div class="contact-info-card">
+      <span class="section-tag">Contact</span>
+      <h2 style="margin-top:8px;">Get in touch</h2>
+      <p>Questions about AgriPrice or want a walkthrough for your cooperative? Reach out below.</p>
+      <div class="contact-info-row">
+        <span class="ci-icon"><i class="fa-solid fa-location-dot"></i></span>
+        <div><strong>Office</strong><span>Antipolo City, Rizal Province</span></div>
+      </div>
+      <div class="contact-info-row">
+        <span class="ci-icon"><i class="fa-solid fa-envelope"></i></span>
+        <div><strong>Email</strong><span>hello@agriprice.ph</span></div>
+      </div>
+      <div class="contact-info-row">
+        <span class="ci-icon"><i class="fa-solid fa-phone"></i></span>
+        <div><strong>Phone</strong><span>(02) 8888 1234</span></div>
+      </div>
+    </div>
+    <form class="contact-form" id="contactForm">
+      <div class="form-row-2">
+        <div class="form-group"><label for="cName">Full Name</label><input type="text" id="cName" placeholder="Juan Dela Cruz" required></div>
+        <div class="form-group"><label for="cEmail">Email</label><input type="email" id="cEmail" placeholder="you@email.com" required></div>
+      </div>
+      <div class="form-group"><label for="cSubject">Subject</label><input type="text" id="cSubject" placeholder="How can we help?" required></div>
+      <div class="form-group"><label for="cMessage">Message</label><textarea id="cMessage" rows="4" placeholder="Tell us a bit more…" required></textarea></div>
+      <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<footer class="landing-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <a href="index.html" class="brand"><span class="brand-mark"><img src="images/logo.png" alt="AgriPrice logo"></span> AgriPrice</a>
+        <p>A crop price forecasting and market decision support reference for Rizal Province.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul><li><a href="#features">Features</a></li><li><a href="login.html">Login</a></li><li><a href="register.html">Register</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h5>Markets</h5>
+        <ul><li><a href="#">Antipolo</a></li><li><a href="#">Cainta</a></li><li><a href="#">Taytay</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AgriPrice. Frontend prototype for Rizal Province.</span>
+      <span>Built for demonstration purposes only.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script>
+  // Mobile drawer
+  const hbtn = document.getElementById('hamburgerBtn');
+  const drawer = document.getElementById('mobileNavDrawer');
+  const scrim = document.getElementById('mobileNavScrim');
+  const closeBtn = document.getElementById('mobileNavClose');
+  function openDrawer(){ drawer.style.right = '0'; scrim.classList.add('show'); }
+  function closeDrawer(){ drawer.style.right = '-300px'; scrim.classList.remove('show'); }
+  hbtn.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+  // Contact form (simulated — no backend)
+  document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    AgriUtils.toast("We'll get back to you shortly.", 'success', 'Message sent');
+    e.target.reset();
+  });
+
+  // If already logged in, offer quick path to dashboard
+  if(AgriStore.isLoggedIn()){
+    document.querySelectorAll('a[href="login.html"]').forEach(a => { a.href = 'dashboard.html'; a.textContent = 'Dashboard'; });
+    document.querySelectorAll('a[href="register.html"]').forEach(a => { a.href = 'dashboard.html'; a.textContent = 'Go to Dashboard'; });
+  }
+</script>
+</body>
+</html>
