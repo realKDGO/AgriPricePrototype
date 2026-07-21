@@ -93,16 +93,6 @@
             <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
           </button>
 
-          <button class="settings-card settings-card--danger" type="button" data-setting="logout">
-            <span class="settings-card-left">
-              <span class="settings-card-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
-              <span>
-                <span class="settings-card-title">Logout</span>
-                <span class="settings-card-desc">Sign out of your current session.</span>
-              </span>
-            </span>
-            <i class="fa-solid fa-chevron-right settings-card-chevron"></i>
-          </button>
         </div>
       </div>
     </main>
@@ -286,18 +276,6 @@
       `;
     }
 
-    if(setting === 'logout'){
-      title = 'Logout';
-      body = `
-        <div class="settings-logout-copy">
-          <p>Are you sure you want to log out of your current AgriPrice session?</p>
-        </div>
-        <div class="settings-modal-actions">
-          <button class="btn btn-danger btn-block" type="button" id="confirmLogoutFromSettings">Logout</button>
-        </div>
-      `;
-    }
-
     settingsModalTitle.textContent = title;
     settingsModalBody.innerHTML = body;
     settingsModalOverlay.style.display = 'flex';
@@ -361,13 +339,6 @@
         p.language = document.getElementById('languageSelect').value;
         AgriStore.savePrefs(p);
         AgriUtils.toast('Language preference saved. (UI only in this prototype)', 'success');
-      });
-    }
-
-    if(setting === 'logout'){
-      document.getElementById('confirmLogoutFromSettings').addEventListener('click', () => {
-        document.getElementById('logoutOverlay')?.classList.add('show');
-        closeSettingsModal();
       });
     }
 

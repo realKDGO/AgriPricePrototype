@@ -53,7 +53,6 @@
           <div class="card card-pad">
             <div class="card-head">
               <h3>Forecast Chart — <span id="cropLabel"></span></h3>
-              <span class="badge stable" id="trendBadge">—</span>
             </div>
             <div class="canvas-wrap"><canvas id="forecastCanvas"></canvas></div>
             <div class="legend-row">
@@ -74,7 +73,11 @@
             </div>
             <div class="metric-box soil">
               <div class="m-label">Trend Direction</div>
-              <div class="m-value" id="trendValue" style="font-size:1.1rem;">See badge above</div>
+              <div class="m-value" id="trendValue" style="font-size:1.1rem;">Stable</div>
+              <div class="trend-inline">
+                <span class="badge stable" id="trendBadgeInline">Stable</span>
+                <span class="trend-caption">Expected price movement over the selected period.</span>
+              </div>
             </div>
           </div>
         </div>

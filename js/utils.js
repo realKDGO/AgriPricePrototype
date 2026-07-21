@@ -5,15 +5,17 @@
 
 const AgriUtils = (() => {
 
-  // ---------- Toast notifications ----------
-  function ensureToastStack(){
-    let stack = document.getElementById('toast-stack');
-    if(!stack){
-      stack = document.createElement('div');
-      stack.id = 'toast-stack';
-      document.body.appendChild(stack);
+  // ---------- Inline feedback notifications ----------
+  function ensureNoticeContainer(){
+    let container = document.getElementById('inline-feedback');
+    if(!container){
+      container = document.createElement('div');
+      container.id = 'inline-feedback';
+      container.className = 'inline-feedback';
+      const target = document.querySelector('.page-body') || document.body;
+      target.prepend(container);
     }
-    return stack;
+    return container;
   }
 
   const ICONS = {
@@ -24,21 +26,23 @@ const AgriUtils = (() => {
   };
 
   function toast(message, type = 'success', title){
-    const stack = ensureToastStack();
-    const el = document.createElement('div');
-    el.className = `toast ${type === 'success' ? '' : type}`;
-    el.innerHTML = `
-      <span class="toast-icon">${ICONS[type] || ICONS.info}</span>
-      <div>
-        ${title ? `<strong>${title}</strong>` : ''}
-        <span>${message}</span>
+    const container = ensureNoticeContainer();
+    const safeTitle = title || (type === 'error' ? 'Action needed' : type === 'warning' ? 'Heads up' : 'Update');
+    container.innerHTML = `
+      <div class="inline-feedback-card ${type}">
+        <span class="inline-feedback-icon">${ICONS[type] || ICONS.info}</span>
+        <div class="inline-feedback-copy">
+          <strong>${safeTitle}</strong>
+          <span>${message}</span>
+        </div>
       </div>
     `;
-    stack.appendChild(el);
-    setTimeout(() => {
-      el.classList.add('leaving');
-      setTimeout(() => el.remove(), 320);
-    }, 3600);
+    container.classList.add('show');
+    clearTimeout(container._hideTimer);
+    container._hideTimer = setTimeout(() => {
+      container.classList.remove('show');
+      container.innerHTML = '';
+    }, 3200);
   }
 
   // ---------- Page loader ----------

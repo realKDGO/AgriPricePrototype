@@ -21,14 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fcNewPrice').textContent = AgriUtils.pesoRound(featured.newPrice) + '/kg';
     document.getElementById('fcPctChange').textContent = `+${featured.pctChange.toFixed(1)}%`;
 
-    // Build a believable 30-day sparkline that trends toward the new price
-    const points = [];
-    let p = featured.oldPrice;
-    for(let i = 0; i < 9; i++){
-      p += AgriUtils.randomBetween(-1, 1.6);
-      points.push(Math.max(p, 5));
-    }
-    points.push(featured.newPrice);
+    const forecastSeries = AgriData.getForecastSeries(featured.crop?.id || 'rice', 1);
+    const points = [...forecastSeries.history, ...forecastSeries.forecast];
     AgriCharts.sparkline(document.getElementById('fcSparkline'), points, AgriCharts.palette.leaf);
 
     // Deep link to Forecasting with this crop pre-selected & auto-generated

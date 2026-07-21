@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>Notifications — AgriPrice</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="app">
+<div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main-content">
+    <header class="topbar" id="topbar"></header>
+
+    <main class="page-body">
+      <div class="page-head">
+        <div><h1>Notifications</h1><p>Stay on top of the latest price changes, forecasts, and market updates.</p></div>
+      </div>
+
+      <div class="notifications-list" id="notificationsList"></div>
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script>
+  AgriLayout.init('notifications.html', 'Notifications');
+
+  const list = document.getElementById('notificationsList');
+  const notifications = AgriData.getNotifications();
+  list.innerHTML = notifications.map(item => `
+    <article class="notification-card ${item.unread ? 'unread' : ''}">
+      <div class="notification-icon ${item.tone}">
+        <i class="fa-solid ${item.icon}"></i>
+      </div>
+      <div class="notification-body">
+        <div class="notification-top">
+          <h3>${item.title}</h3>
+          <span class="notification-badge">${item.unread ? 'New' : 'Read'}</span>
+        </div>
+        <p>${item.description}</p>
+        <div class="notification-meta">
+          <span>${item.date}</span>
+          <span>${item.time}</span>
+        </div>
+      </div>
+    </article>
+  `).join('');
+</script>
+</body>
+</html>

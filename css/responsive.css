@@ -44,9 +44,12 @@
   .brand{ font-size:1.15rem; gap:9px; }
   .section{ padding: 64px 0; }
   .hero{ padding: 56px 0 40px; }
+  .hero-grid{ grid-template-columns: 1fr; gap: 32px; }
   .hero-actions{ flex-direction:column; align-items:stretch; }
   .hero-actions .btn{ width:100%; }
-  .hero-stats{ gap:22px; flex-wrap:wrap; }
+  .hero-highlights{ gap:12px; }
+  .features-grid{ grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .steps-grid{ grid-template-columns: 1fr; gap: 16px; }
   .floaty-badge{ display:none; }
   .features-grid{ grid-template-columns: 1fr; }
   .footer-top{ grid-template-columns: 1fr; gap:28px; }
@@ -62,7 +65,12 @@
   .stat-value{ font-size:1.5rem; }
   .grid-3{ grid-template-columns: 1fr; }
   .result-metrics{ grid-template-columns: 1fr 1fr; }
-  .topbar{ padding: 0 16px; }
+  .topbar{ padding: 0 16px; min-height: 62px; height: auto; align-items:center; }
+  .topbar-left{ min-height: 100%; display:flex; align-items:center; }
+  .topbar-left h2{ display:none; }
+  .topbar-right{ display:flex; align-items:center; min-height: 100%; }
+  .topbar-icon-btn{ width: 42px; height: 42px; }
+  .page-body{ padding: 18px 18px 88px; }
 
   .data-table{ display:none; }
   .card-list-mobile{ display:flex; }
@@ -73,6 +81,16 @@
 
   .profile-header{ flex-direction:column; text-align:center; }
   .about-list li{ font-size:.9rem; }
+
+  .landing-nav .container{ height: auto; padding: 12px 18px; }
+  .nav-links{ display:none; }
+  .nav-cta .btn-outline, .nav-cta .btn-primary{ display:none; }
+  .hero{ padding: 48px 0 36px; }
+  .hero-copy h1{ font-size: clamp(2rem, 6vw, 2.6rem); }
+  .hero-sub{ font-size: 1rem; }
+  .features-grid{ grid-template-columns: 1fr; }
+  .about-grid, .contact-grid{ grid-template-columns: 1fr; gap: 24px; }
+  .footer-simple{ flex-direction:column; align-items:flex-start; }
 
   /* Bottom tab bar replaces reliance on the hamburger drawer for primary nav */
   .bottom-nav{ display:flex; }

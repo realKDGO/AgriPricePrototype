@@ -76,6 +76,14 @@ const AgriData = (() => {
     { text:'Eggplant prices stable in Binangonan Public Market', time:'3 days ago', tone:'stable' }
   ];
 
+  const NOTIFICATIONS = [
+    { id:'n1', title:'New crop price update', description:'Rice prices climbed in Antipolo Public Market this morning.', time:'10 min ago', date:'Today, 8:45 AM', unread:true, icon:'fa-circle-dollar-to-slot', tone:'up' },
+    { id:'n2', title:'Forecast completed', description:'Your 1 Month outlook for Tomato is ready and synced to the dashboard.', time:'1 hour ago', date:'Today, 7:20 AM', unread:true, icon:'fa-chart-line', tone:'info' },
+    { id:'n3', title:'Market recommendation updated', description:'Cainta is now the strongest market for your shortlisted crops.', time:'3 hours ago', date:'Today, 4:35 AM', unread:false, icon:'fa-compass', tone:'up' },
+    { id:'n4', title:'Historical price records added', description:'New weekly records for Garlic and Onion were added to the archive.', time:'Yesterday', date:'Yesterday, 6:10 PM', unread:false, icon:'fa-clock-rotate-left', tone:'stable' },
+    { id:'n5', title:'System announcement', description:'The latest dashboard refresh includes improved forecast visuals and notification routing.', time:'Yesterday', date:'Yesterday, 11:30 AM', unread:false, icon:'fa-bell', tone:'info' }
+  ];
+
   // Dummy market insight explanations, keyed by crop id — used on the
   // Home page Insight Card to explain the Featured Crop's price movement.
   const INSIGHTS = {
@@ -160,14 +168,55 @@ const AgriData = (() => {
     return CROP_PRICES.filter(r => r.trend === 'up' && findMarketByShortName(r.market)?.id === marketId);
   }
 
+  // ---------- Forecast series for shared dashboard + forecasting charts ----------
+  function getForecastSeries(cropId, months = 1){
+    const crop = findCropById(cropId);
+    const base = { rice:45, tomato:65, eggplant:58, onion:90, corn:37, cabbage:52, garlic:130, banana:48 }[cropId] || 50;
+    const historyPoints = 8;
+    const futurePoints = months * 4;
+    const biasPool = ['up', 'down', 'stable'];
+    const hash = Array.from(cropId || '').reduce((sum, ch, index) => sum + ch.charCodeAt(0) * (index + 1), 0);
+    const bias = biasPool[(hash + months) % biasPool.length];
+    const biasStep = bias === 'up' ? 0.7 + months * 0.08 : bias === 'down' ? -(0.6 + months * 0.08) : 0.08;
+
+    const history = [];
+    let price = base - (biasStep > 0 ? biasStep * 2 : Math.abs(biasStep) * 1.8);
+    for(let i = 0; i < historyPoints; i++){
+      price += (i % 2 === 0 ? 0.9 : -0.7) + ((hash + i) % 3 - 1) * 0.35;
+      history.push(Math.max(price, 8));
+    }
+
+    const forecast = [];
+    let fPrice = history[history.length - 1];
+    for(let i = 0; i < futurePoints; i++){
+      fPrice += biasStep + ((i % 3) - 1) * 0.35;
+      forecast.push(Math.max(fPrice, 8));
+    }
+
+    const predicted = forecast[forecast.length - 1];
+    const pctChange = ((predicted - base) / base) * 100;
+    const trend = pctChange > 2 ? 'Increasing' : pctChange < -2 ? 'Decreasing' : 'Stable';
+    const confidence = 80 + months * 2 + (hash % 5) * 2;
+    const labels = [];
+    for(let i = historyPoints; i > 0; i--) labels.push(`W-${i}`);
+    for(let i = 1; i <= futurePoints; i++) labels.push(`W+${i}`);
+
+    return { crop, base, history, forecast, predicted, pctChange, trend, confidence, labels, historyPoints };
+  }
+
   // ---------- Insight text for a given crop id ----------
   function getInsightForCrop(cropId){
     return INSIGHTS[cropId] || 'Prices are being monitored closely across Rizal Province markets this week.';
   }
 
+  function getNotifications(){
+    return NOTIFICATIONS;
+  }
+
   return {
-    CROPS, MARKETS, CROP_PRICES, HISTORICAL_PRICES, RECENT_UPDATES, ANALYTICS, INSIGHTS,
+    CROPS, MARKETS, CROP_PRICES, HISTORICAL_PRICES, RECENT_UPDATES, NOTIFICATIONS, ANALYTICS, INSIGHTS,
     findMarketByShortName, findMarketById, findCropById, findCropByName, getCropImage,
-    getFeaturedCropUpdate, getBestMarketToday, getRisingCropsForMarket, getInsightForCrop
+    getFeaturedCropUpdate, getBestMarketToday, getRisingCropsForMarket, getInsightForCrop,
+    getForecastSeries, getNotifications
   };
 })();

@@ -45,7 +45,16 @@ const AgriLayout = (() => {
         <button class="sidebar-close" id="sidebarClose" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
       </div>
       ${groups}
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" type="button" id="sidebarLogoutBtn">
+          <span class="nav-ic"><i class="fa-solid fa-right-from-bracket"></i></span> Logout
+        </button>
+      </div>
     `;
+
+    document.getElementById('sidebarLogoutBtn')?.addEventListener('click', () => {
+      document.getElementById('logoutOverlay')?.classList.add('show');
+    });
   }
 
   function renderTopbar(pageTitle){
@@ -64,7 +73,7 @@ const AgriLayout = (() => {
     `;
 
     document.getElementById('notifBtn').addEventListener('click', () => {
-      AgriUtils.toast('You have no new notifications right now.', 'info', 'Notifications');
+      window.location.href = 'notifications.html';
     });
   }
 
