@@ -460,3 +460,23 @@ body.dark-mode .inline-feedback-card.info{ background:#1C2C22; border-color:#355
 body.dark-mode .transfer-banner,
 body.dark-mode .profit-margin-box{ background:#20372A; border-color:#355C43; }
 body.dark-mode .bottom-nav{ background:#18201B; border-color:#29332D; }
+
+
+/* AGRIPRICE 1440x1024 PROTOTYPE FIT
+   Desktop prototype target: keep primary page content within a 1440 x 1024 viewport. */
+@media (min-width: 1200px) and (max-height: 1100px) {
+  html { font-size: 14px; }
+  body { overflow-x: hidden; }
+  .main-content, main, .content, .page-content { min-width: 0; }
+  .main-content, .content, .page-content { padding-top: 16px; padding-bottom: 16px; }
+  .topbar, .top-bar, header.topbar { min-height: 56px; }
+  h1 { margin-top: 0; margin-bottom: 12px; }
+  h2, h3 { margin-top: 0; }
+  .card, .panel, .section, .settings-card { padding-top: 14px; padding-bottom: 14px; }
+  .dashboard-grid, .cards-grid, .stats-grid { gap: 12px; }
+  canvas { max-height: 360px; }
+  table { font-size: .95rem; }
+}
+@media (width: 1440px) and (height: 1024px) {
+  body { min-height: 1024px; }
+}
