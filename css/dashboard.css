@@ -460,3 +460,192 @@ body.dark-mode .inline-feedback-card.info{ background:#1C2C22; border-color:#355
 body.dark-mode .transfer-banner,
 body.dark-mode .profit-margin-box{ background:#20372A; border-color:#355C43; }
 body.dark-mode .bottom-nav{ background:#18201B; border-color:#29332D; }
+
+/* ========================================================================== 
+   Modern Capture-Safe Dropdowns
+   Native <select> stays in the DOM as the data source, while the visible
+   control is normal HTML so Figma Capture retains all text.
+   ========================================================================== */
+.modern-select{
+  position:relative;
+  width:100%;
+  min-width:0;
+  font-family:inherit;
+  color:var(--ink);
+  z-index:1;
+}
+.modern-select.open{ z-index:120; }
+.modern-select .native-select-source{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+.modern-select-trigger{
+  width:100%;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px 10px 14px;
+  border:1.5px solid var(--mist-dark);
+  border-radius:12px;
+  background:var(--white);
+  color:var(--ink);
+  font:inherit;
+  font-size:.9rem;
+  font-weight:500;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:0 1px 2px rgba(27,67,50,.03);
+  transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.modern-select-trigger:hover{
+  border-color:#AABBAF;
+  background:#FCFDFB;
+}
+.modern-select-trigger:focus-visible,
+.modern-select.open .modern-select-trigger{
+  outline:none;
+  border-color:var(--leaf);
+  box-shadow:0 0 0 3px rgba(45,125,82,.12);
+}
+.modern-select-value{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--ink);
+}
+.modern-select-value.placeholder{ color:var(--ink-soft); }
+.modern-select-chevron{
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  color:var(--ink-soft);
+  background:var(--cream);
+  font-size:.72rem;
+  transition:transform .18s ease, background .18s ease, color .18s ease;
+}
+.modern-select.open .modern-select-chevron{
+  transform:rotate(180deg);
+  background:var(--sprout-pale);
+  color:var(--leaf);
+}
+.modern-select-menu{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 7px);
+  display:none;
+  max-height:260px;
+  overflow-y:auto;
+  padding:6px;
+  border:1px solid var(--mist-dark);
+  border-radius:14px;
+  background:var(--white);
+  box-shadow:0 14px 34px rgba(22,48,36,.16), 0 2px 8px rgba(22,48,36,.06);
+}
+.modern-select.open .modern-select-menu{ display:block; }
+.modern-select-option{
+  width:100%;
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:8px 9px 8px 11px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:var(--ink-soft);
+  font:inherit;
+  font-size:.86rem;
+  font-weight:500;
+  text-align:left;
+  cursor:pointer;
+}
+.modern-select-option:hover,
+.modern-select-option:focus-visible{
+  outline:none;
+  background:var(--sprout-pale);
+  color:var(--forest-dark);
+}
+.modern-select-option.selected{
+  background:#EEF8F2;
+  color:var(--forest-dark);
+  font-weight:650;
+}
+.modern-select-option-check{
+  width:24px;
+  height:24px;
+  flex:0 0 24px;
+  display:grid;
+  place-items:center;
+  border-radius:7px;
+  color:transparent;
+  font-size:.68rem;
+}
+.modern-select-option.selected .modern-select-option-check{
+  color:#fff;
+  background:var(--leaf);
+}
+.modern-select-option:disabled{ opacity:.45; cursor:not-allowed; }
+
+/* Toolbar filters stay compact instead of stretching like form fields. */
+.toolbar-filters .modern-select{
+  width:auto;
+  min-width:148px;
+  flex:0 1 175px;
+}
+.toolbar-filters .modern-select-trigger{
+  min-height:38px;
+  padding:7px 9px 7px 11px;
+  border-radius:10px;
+  font-size:.80rem;
+}
+.toolbar-filters .modern-select-chevron{
+  width:24px;
+  height:24px;
+  flex-basis:24px;
+  border-radius:7px;
+}
+
+body.dark-mode .modern-select-trigger{
+  background:#172019;
+  border-color:#34433A;
+  color:#EDF4EF;
+  box-shadow:none;
+}
+body.dark-mode .modern-select-trigger:hover{ background:#1C2820; border-color:#4B6254; }
+body.dark-mode .modern-select-value{ color:#EDF4EF; }
+body.dark-mode .modern-select-value.placeholder{ color:#91A097; }
+body.dark-mode .modern-select-chevron{ background:#222D26; color:#A7B7AD; }
+body.dark-mode .modern-select.open .modern-select-chevron{ background:#254633; color:#BDE8CC; }
+body.dark-mode .modern-select-menu{
+  background:#172019;
+  border-color:#34433A;
+  box-shadow:0 16px 38px rgba(0,0,0,.34);
+}
+body.dark-mode .modern-select-option{ color:#B8C6BD; }
+body.dark-mode .modern-select-option:hover,
+body.dark-mode .modern-select-option:focus-visible{ background:#223229; color:#F4F8F5; }
+body.dark-mode .modern-select-option.selected{ background:#254633; color:#F4F8F5; }
+
+@media (min-width:1100px){
+  .modern-select-trigger{ min-height:36px; padding:7px 9px 7px 11px; font-size:.82rem; }
+  .modern-select-chevron{ width:24px; height:24px; flex-basis:24px; }
+  .modern-select-option{ min-height:34px; padding:6px 8px 6px 10px; font-size:.80rem; }
+  .modern-select-menu{ max-height:230px; }
+}
