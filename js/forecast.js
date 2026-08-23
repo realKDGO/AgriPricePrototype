@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedPeriodMonths = 1;
   let lastResult = null;
 
-  cropSelect.innerHTML = AgriData.CROPS.slice(0, 11).map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  cropSelect.innerHTML = AgriData.CROPS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
   const preselectCropId = urlParams.get('crop');
   if(preselectCropId && AgriData.findCropById(preselectCropId)) cropSelect.value = preselectCropId;

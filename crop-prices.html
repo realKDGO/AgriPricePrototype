@@ -11,19 +11,7 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/responsive.css">
-<style>
-/* AGRIPRICE CROP LIMIT 11 */
-.crop-prices-page .crop-card:nth-of-type(n+12),
-.crop-prices-page .crop-item:nth-of-type(n+12),
-.crop-prices-page .crop-row:nth-of-type(n+12) { display:none !important; }
-.crop-prices-page table tbody tr:nth-child(n+12) { display:none !important; }
-</style>
-<style>
-/* AGRIPRICE INLINE NO-SCROLL SAFEGUARD */
-@media (min-width:1200px) and (min-height:900px){
-  html,body{height:100%;overflow:hidden!important}
-}
-</style>
+<link rel="stylesheet" href="css/prototype-1440.css">
 </head>
 <body class="app">
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
@@ -130,7 +118,7 @@
 
     emptyState.style.display = filtered.length ? 'none' : 'block';
 
-    filtered.forEach(r => {
+    filtered.slice(0, 11).forEach(r => {
       tbody.insertAdjacentHTML('beforeend', `
         <tr>
           <td><div class="cell-crop"><span class="crop-icon-badge"><img src="${cropImage(r.crop)}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</div></td>
