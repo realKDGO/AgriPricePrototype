@@ -63,7 +63,7 @@ const AgriLayout = (() => {
 
     el.innerHTML = `
       <div class="topbar-left">
-        <h2>${pageTitle}</h2>
+        <h1>${pageTitle}</h1>
       </div>
       <div class="topbar-right">
         <button class="topbar-icon-btn" aria-label="Notifications" id="notifBtn">
@@ -125,19 +125,31 @@ const AgriLayout = (() => {
     document.getElementById('confirmLogout').addEventListener('click', () => AgriAuth.logout());
   }
 
-  function applyDarkMode(){
+  function applyAppearance(){
     const prefs = AgriStore.getPrefs();
-    document.body.classList.toggle('dark-mode', !!prefs.darkMode);
+    const theme = prefs.theme || (prefs.darkMode ? 'dark' : 'system');
+    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+    const useDark = theme === 'dark' || (theme === 'system' && prefersDark);
+    document.body.classList.toggle('dark-mode', useDark);
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.textSize = prefs.textSize || 'medium';
   }
+
+  // Kept as an alias so older page code continues to work.
+  function applyDarkMode(){ applyAppearance(); }
 
   function init(activePage, pageTitle){
     AgriAuth.requireAuth();
-    applyDarkMode();
+    applyAppearance();
     renderSidebar(activePage);
     renderTopbar(pageTitle);
     renderBottomNav(activePage);
     wireLogoutOverlay();
   }
 
-  return { init, applyDarkMode };
+  window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', () => {
+    if((AgriStore.getPrefs().theme || 'system') === 'system') applyAppearance();
+  });
+
+  return { init, applyAppearance, applyDarkMode };
 })();

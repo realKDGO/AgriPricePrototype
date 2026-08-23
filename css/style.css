@@ -327,3 +327,8 @@ input:focus, select:focus, textarea:focus{ border-color: var(--leaf); box-shadow
 /* Utility */
 .text-center{ text-align:center; }
 .mt-0{ margin-top:0; }
+
+/* Global text-size preference */
+html[data-text-size="small"]{ font-size:14px; }
+html[data-text-size="medium"]{ font-size:16px; }
+html[data-text-size="large"]{ font-size:18px; }

@@ -6,7 +6,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<title>Settings — AgriPrice</title>
+<title>Settings</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
@@ -22,7 +22,7 @@
 
     <main class="page-body">
       <div class="page-head">
-        <div><h1>Settings</h1><p>Control how AgriPrice looks and behaves for you.</p></div>
+        <div><p>Control how AgriPrice looks and behaves for you.</p></div>
       </div>
 
       <div class="settings-layout">
@@ -132,7 +132,6 @@
         <label for="editPassword">Password</label>
         <input type="password" id="editPassword" placeholder="Enter a new password">
       </div>
-      <div class="field-hint">Email address remains unchanged.</div>
       <div class="settings-modal-actions">
         <button type="button" class="btn btn-outline" id="cancelProfileEdit">Cancel</button>
         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -177,7 +176,6 @@
             <div class="settings-modal-profile-email">${session?.email || '—'}</div>
           </div>
         </div>
-        <div class="settings-modal-subtitle">Email address is view-only.</div>
         <div class="settings-modal-actions">
           <button class="btn btn-outline" type="button" id="openProfileEditFromModal">Edit Profile</button>
         </div>
@@ -239,12 +237,27 @@
     if(setting === 'appearance'){
       title = 'Appearance';
       body = `
-        <div class="settings-row settings-row--modal">
+        <div class="appearance-option">
           <div>
-            <div class="sr-label">Dark Mode</div>
-            <div class="sr-desc">Switch to a low-light color theme.</div>
+            <div class="sr-label">Theme</div>
+            <div class="sr-desc">Choose how the prototype should look.</div>
           </div>
-          <label class="switch"><input type="checkbox" id="darkModeToggle" ${prefs.darkMode ? 'checked' : ''}><span class="slider"></span></label>
+          <div class="appearance-choice" role="group" aria-label="Theme">
+            <button type="button" data-theme="light" class="${prefs.theme === 'light' ? 'active' : ''}"><i class="fa-solid fa-sun"></i> Light</button>
+            <button type="button" data-theme="dark" class="${prefs.theme === 'dark' ? 'active' : ''}"><i class="fa-solid fa-moon"></i> Dark</button>
+            <button type="button" data-theme="system" class="${prefs.theme === 'system' ? 'active' : ''}"><i class="fa-solid fa-desktop"></i> System</button>
+          </div>
+        </div>
+        <div class="appearance-option">
+          <div>
+            <div class="sr-label">Text Size</div>
+            <div class="sr-desc">Adjust the overall interface text size.</div>
+          </div>
+          <select id="textSizeSelect" style="max-width:180px;">
+            <option value="small" ${prefs.textSize === 'small' ? 'selected' : ''}>Small</option>
+            <option value="medium" ${prefs.textSize === 'medium' ? 'selected' : ''}>Medium</option>
+            <option value="large" ${prefs.textSize === 'large' ? 'selected' : ''}>Large</option>
+          </select>
         </div>
       `;
     }
@@ -324,12 +337,20 @@
     }
 
     if(setting === 'appearance'){
-      document.getElementById('darkModeToggle').addEventListener('change', () => {
+      document.querySelectorAll('[data-theme]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const p = AgriStore.getPrefs();
+          p.theme = btn.dataset.theme;
+          AgriStore.savePrefs(p);
+          document.querySelectorAll('[data-theme]').forEach(b => b.classList.toggle('active', b === btn));
+          AgriLayout.applyAppearance();
+        });
+      });
+      document.getElementById('textSizeSelect').addEventListener('change', (e) => {
         const p = AgriStore.getPrefs();
-        p.darkMode = document.getElementById('darkModeToggle').checked;
+        p.textSize = e.target.value;
         AgriStore.savePrefs(p);
-        AgriLayout.applyDarkMode();
-        AgriUtils.toast(document.getElementById('darkModeToggle').checked ? 'Dark mode enabled.' : 'Dark mode disabled.', 'success');
+        AgriLayout.applyAppearance();
       });
     }
 
@@ -345,9 +366,13 @@
     document.querySelectorAll('.pass-toggle').forEach(btn => {
       btn.addEventListener('click', () => {
         const input = document.getElementById(btn.dataset.target);
-        const show = input.type === 'password';
-        input.type = show ? 'text' : 'password';
-        btn.innerHTML = show ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+        if(!input) return;
+        const shouldShow = input.getAttribute('type') === 'password';
+        input.setAttribute('type', shouldShow ? 'text' : 'password');
+        btn.setAttribute('aria-pressed', String(shouldShow));
+        const icon = btn.querySelector('i');
+        icon?.classList.toggle('fa-eye', !shouldShow);
+        icon?.classList.toggle('fa-eye-slash', shouldShow);
       });
     });
   }

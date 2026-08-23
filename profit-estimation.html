@@ -6,7 +6,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<title>Profit Estimation — AgriPrice</title>
+<title>Profit Estimation</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
@@ -22,54 +22,55 @@
 
     <main class="page-body">
       <div class="page-head">
-        <div><h1>Profit Estimation</h1><p>Calculate your expected profit before you sell.</p></div>
+        <div><p>Review the sale details, add your remaining expenses, and see your estimated earnings automatically.</p></div>
       </div>
 
-      <div class="profit-layout">
+      <div class="transfer-banner" id="recommendationBanner" style="display:none;">
+        <i class="fa-solid fa-circle-check"></i>
+        <div><strong>Market recommendation loaded.</strong><span>Your crop, quantity, and recommended market were carried over automatically.</span></div>
+      </div>
+
+      <div class="profit-layout profit-layout--enhanced">
         <div class="card card-pad">
-          <h3 style="margin-bottom:18px;">Your Sale Details</h3>
-          <div class="form-group">
-            <label for="peCrop">Crop</label>
-            <select id="peCrop"></select>
-          </div>
-          <div class="form-group">
-            <label for="peQty">Quantity (kg)</label>
-            <input type="number" id="peQty" min="1" value="100">
-          </div>
-          <div class="form-group">
-            <label for="peMarket">Market</label>
-            <select id="peMarket"></select>
-          </div>
-          <div class="form-group">
-            <label for="peOtherExpenses">Other Expenses (₱)</label>
-            <input type="number" id="peOtherExpenses" min="0" step="0.5" value="0" placeholder="0">
-          </div>
-          <p class="field-hint" style="margin-top:-6px;">Selling price and transport cost update automatically based on the selected market.</p>
-        </div>
-
-        <div class="card card-pad">
-          <h3 style="margin-bottom:8px;">Estimated Results</h3>
-          <p style="margin-bottom:18px;">Based on the sale details you entered.</p>
-
-          <div class="profit-result-row">
-            <span class="pr-label">Gross Income</span>
-            <span class="pr-value" id="peGross">₱0.00</span>
-          </div>
-          <div class="profit-result-row">
-            <span class="pr-label">Transportation Expense</span>
-            <span class="pr-value" id="peTransportOut">₱0.00</span>
-          </div>
-          <div class="profit-result-row total">
-            <span class="pr-label">Net Profit</span>
-            <span class="pr-value" id="peNet">₱0.00</span>
-          </div>
-
-          <div style="margin-top:22px; background:var(--sprout-pale); border-radius:var(--radius-md); padding:16px;">
-            <div class="mini-crop-row" style="border:none; padding:0;">
-              <span style="font-size:.85rem; color:var(--forest);">Profit Margin</span>
-              <strong id="peMargin" style="color:var(--forest-dark);">0%</strong>
+          <h3 style="margin-bottom:18px;">Sale & Expense Details</h3>
+          <div class="profit-form-grid">
+            <div class="form-group">
+              <label for="peCrop">Crop</label>
+              <select id="peCrop"></select>
+            </div>
+            <div class="form-group">
+              <label for="peQty">Quantity (kg)</label>
+              <input type="number" id="peQty" min="1" value="100">
+            </div>
+            <div class="form-group profit-form-full">
+              <label for="peMarket">Market</label>
+              <select id="peMarket"></select>
+            </div>
+            <div class="form-group">
+              <label for="peSellPrice">Selling Price / kg</label>
+              <input type="text" id="peSellPrice" readonly>
+            </div>
+            <div class="form-group">
+              <label for="peTransport">Transportation</label>
+              <input type="text" id="peTransport" readonly>
+            </div>
+            <div class="form-group profit-form-full">
+              <label for="peOtherExpenses">Other Expenses (₱)</label>
+              <input type="number" id="peOtherExpenses" min="0" step="0.5" value="0" placeholder="Seeds, packaging, labor, fees, etc.">
             </div>
           </div>
+          <p class="field-hint">Price and transportation use the same prototype dataset as Crop Prices and Market Recommendation.</p>
+        </div>
+
+        <div class="card card-pad profit-summary-card">
+          <h3 style="margin-bottom:8px;">Estimated Earnings</h3>
+          <p style="margin-bottom:18px;">Results update automatically whenever you change an input.</p>
+          <div class="profit-result-row"><span class="pr-label">Gross Sales</span><span class="pr-value" id="peGross">₱0.00</span></div>
+          <div class="profit-result-row"><span class="pr-label">Transportation</span><span class="pr-value" id="peTransportOut">₱0.00</span></div>
+          <div class="profit-result-row"><span class="pr-label">Other Expenses</span><span class="pr-value" id="peOtherOut">₱0.00</span></div>
+          <div class="profit-result-row"><span class="pr-label">Total Expenses</span><span class="pr-value" id="peTotalExpenses">₱0.00</span></div>
+          <div class="profit-result-row total"><span class="pr-label">Estimated Net Earnings</span><span class="pr-value" id="peNet">₱0.00</span></div>
+          <div class="profit-margin-box"><span>Profit Margin</span><strong id="peMargin">0%</strong></div>
         </div>
       </div>
     </main>
@@ -88,37 +89,38 @@
   const peMarket = document.getElementById('peMarket');
   const qtyEl = document.getElementById('peQty');
   const otherExpensesEl = document.getElementById('peOtherExpenses');
+  const params = new URLSearchParams(window.location.search);
 
   peCrop.innerHTML = AgriData.CROPS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
   peMarket.innerHTML = AgriData.MARKETS.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
 
-  function currentCrop(){ return AgriData.findCropById(peCrop.value) || AgriData.CROPS[0]; }
-  function currentMarket(){ return AgriData.findMarketById(peMarket.value) || AgriData.MARKETS[0]; }
-  function currentMarketPrice(){
-    const crop = currentCrop();
-    const market = currentMarket();
-    const shortName = market.name.split(' ')[0].toLowerCase();
-    const priceRow = AgriData.CROP_PRICES.find(r => r.crop.toLowerCase() === crop.name.toLowerCase() && r.market.toLowerCase() === shortName);
-    return priceRow ? priceRow.price : 0;
-  }
+  if(params.get('crop') && AgriData.findCropById(params.get('crop'))) peCrop.value = params.get('crop');
+  if(params.get('market') && AgriData.findMarketById(params.get('market'))) peMarket.value = params.get('market');
+  if(Number(params.get('qty')) > 0) qtyEl.value = Number(params.get('qty'));
+  if(params.get('from') === 'recommendation') document.getElementById('recommendationBanner').style.display = 'flex';
 
   function calculate(){
     const qty = Math.max(Number(qtyEl.value) || 0, 0);
-    const price = currentMarketPrice();
-    const transport = currentMarket().transportCost || 0;
     const otherExpenses = Math.max(Number(otherExpensesEl.value) || 0, 0);
-
+    const price = AgriData.getCropMarketPrice(peCrop.value, peMarket.value);
+    const transport = AgriData.getTransportCost(peMarket.value, qty);
     const gross = qty * price;
-    const net = gross - transport - otherExpenses;
+    const totalExpenses = transport + otherExpenses;
+    const net = gross - totalExpenses;
     const margin = gross > 0 ? (net / gross) * 100 : 0;
 
+    document.getElementById('peSellPrice').value = AgriUtils.peso(price);
+    document.getElementById('peTransport').value = AgriUtils.peso(transport);
     document.getElementById('peGross').textContent = AgriUtils.peso(gross);
     document.getElementById('peTransportOut').textContent = AgriUtils.peso(transport);
+    document.getElementById('peOtherOut').textContent = AgriUtils.peso(otherExpenses);
+    document.getElementById('peTotalExpenses').textContent = AgriUtils.peso(totalExpenses);
     document.getElementById('peNet').textContent = AgriUtils.peso(net);
-    document.getElementById('peMargin').textContent = Math.round(margin) + '%';
+    document.getElementById('peMargin').textContent = `${Math.round(margin)}%`;
+    document.getElementById('peNet').classList.toggle('negative-value', net < 0);
   }
 
-  [peCrop, peMarket, qtyEl, otherExpensesEl].forEach(el => el.addEventListener('input', calculate));
+  [qtyEl, otherExpensesEl].forEach(el => el.addEventListener('input', calculate));
   [peCrop, peMarket].forEach(el => el.addEventListener('change', calculate));
   calculate();
 </script>

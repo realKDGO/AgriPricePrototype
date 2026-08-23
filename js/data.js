@@ -26,24 +26,38 @@ const AgriData = (() => {
     { id:'teresa',      name:'Teresa Public Market',             distanceKm:20, transportCost:260 }
   ];
 
-  // Current crop prices (base dataset used throughout the app)
-  const CROP_PRICES = [
-    { crop:'Rice',     market:'Antipolo',   price:45, change:2.3,  trend:'up' },
-    { crop:'Tomato',   market:'Cainta',     price:65, change:-4.1, trend:'down' },
-    { crop:'Eggplant', market:'Binangonan', price:58, change:0.0,  trend:'stable' },
-    { crop:'Onion',    market:'Taytay',     price:90, change:6.8,  trend:'up' },
-    { crop:'Corn',     market:'Angono',     price:37, change:-1.2, trend:'down' },
-    { crop:'Cabbage',  market:'Rodriguez',  price:52, change:1.5,  trend:'up' },
-    { crop:'Garlic',   market:'Teresa',     price:130,change:3.2,  trend:'up' },
-    { crop:'Banana',   market:'Antipolo',   price:48, change:0.0,  trend:'stable' },
-    { crop:'Rice',     market:'Taytay',     price:47, change:1.1,  trend:'up' },
-    { crop:'Tomato',   market:'Angono',     price:60, change:-2.0, trend:'down' },
-    { crop:'Onion',    market:'Binangonan', price:87, change:5.0,  trend:'up' },
-    { crop:'Corn',     market:'Cainta',     price:39, change:2.6,  trend:'up' },
-    { crop:'Eggplant', market:'Teresa',     price:55, change:-0.9, trend:'down' },
-    { crop:'Garlic',   market:'Rodriguez',  price:126,change:-1.6, trend:'down' },
-    { crop:'Cabbage',  market:'Antipolo',   price:54, change:0.0,  trend:'stable' }
-  ];
+  // Shared prototype price dataset. Every page uses this same crop/market source
+  // so Market Recommendation and Profit Estimation never disagree.
+  const BASE_CROP_PRICES = {
+    rice:45, tomato:65, eggplant:58, onion:90,
+    corn:37, cabbage:52, garlic:130, banana:48
+  };
+  const MARKET_PRICE_ADJUSTMENTS = {
+    antipolo:0, cainta:2, binangonan:-2, taytay:3,
+    angono:-1, rodriguez:1, teresa:4
+  };
+  const MARKET_SHORT_NAMES = {
+    antipolo:'Antipolo', cainta:'Cainta', binangonan:'Binangonan', taytay:'Taytay',
+    angono:'Angono', rodriguez:'Rodriguez', teresa:'Teresa'
+  };
+
+  const CROP_PRICES = CROPS.flatMap((crop, cropIndex) =>
+    MARKETS.map((market, marketIndex) => {
+      const price = BASE_CROP_PRICES[crop.id] + MARKET_PRICE_ADJUSTMENTS[market.id];
+      const rawChange = ((cropIndex * 3 + marketIndex * 2) % 13) - 6;
+      const change = Math.round(rawChange * 0.7 * 10) / 10;
+      const trend = change > 0.5 ? 'up' : change < -0.5 ? 'down' : 'stable';
+      return {
+        crop: crop.name,
+        cropId: crop.id,
+        market: MARKET_SHORT_NAMES[market.id],
+        marketId: market.id,
+        price,
+        change,
+        trend
+      };
+    })
+  );
 
   // Generate ~60 rows of historical price data across the last 60 days
   function generateHistorical(){
@@ -54,7 +68,7 @@ const AgriData = (() => {
       d.setDate(d.getDate() - i);
       const crop = CROPS[i % CROPS.length];
       const market = MARKETS[(i + 2) % MARKETS.length];
-      const base = { rice:44, tomato:62, eggplant:56, onion:85, corn:36, cabbage:50, garlic:125, banana:46 }[crop.id] || 50;
+      const base = BASE_CROP_PRICES[crop.id] || 50;
       const price = Math.round((base + (Math.sin(i / 3) * 6) + (Math.random() * 6 - 3)) * 100) / 100;
       rows.push({
         date: d.toISOString().slice(0,10),
@@ -126,6 +140,33 @@ const AgriData = (() => {
     return crop?.image || 'images/logo.png';
   }
 
+  function getCropMarketPrice(cropId, marketId){
+    const row = CROP_PRICES.find(r => r.cropId === cropId && r.marketId === marketId);
+    return row ? row.price : 0;
+  }
+
+  function getTransportCost(marketId, qty = 100){
+    const market = findMarketById(marketId);
+    if(!market) return 0;
+    const quantity = Math.max(Number(qty) || 0, 1);
+    // transportCost is the sample cost for 100 kg; scale moderately for larger loads
+    const loadFactor = 0.65 + (quantity / 100) * 0.35;
+    return Math.round(market.transportCost * loadFactor * 100) / 100;
+  }
+
+  function getMarketOptions(cropId, qty){
+    const quantity = Math.max(Number(qty) || 1, 1);
+    return MARKETS.map(market => {
+      const price = getCropMarketPrice(cropId, market.id);
+      const transport = getTransportCost(market.id, quantity);
+      const gross = price * quantity;
+      const netBeforeOtherExpenses = gross - transport;
+      const margin = gross > 0 ? (netBeforeOtherExpenses / gross) * 100 : 0;
+      const score = netBeforeOtherExpenses - (market.distanceKm * 2);
+      return { market, price, transport, gross, profit:netBeforeOtherExpenses, margin, score };
+    }).sort((a,b) => b.score - a.score);
+  }
+
   // ---------- Featured Crop: highest price increase right now ----------
   function getFeaturedCropUpdate(){
     const top = [...CROP_PRICES].filter(r => r.trend === 'up').sort((a,b) => b.change - a.change)[0];
@@ -171,7 +212,7 @@ const AgriData = (() => {
   // ---------- Forecast series for shared dashboard + forecasting charts ----------
   function getForecastSeries(cropId, months = 1){
     const crop = findCropById(cropId);
-    const base = { rice:45, tomato:65, eggplant:58, onion:90, corn:37, cabbage:52, garlic:130, banana:48 }[cropId] || 50;
+    const base = BASE_CROP_PRICES[cropId] || 50;
     const historyPoints = 8;
     const futurePoints = months * 4;
     const biasPool = ['up', 'down', 'stable'];
@@ -216,6 +257,7 @@ const AgriData = (() => {
   return {
     CROPS, MARKETS, CROP_PRICES, HISTORICAL_PRICES, RECENT_UPDATES, NOTIFICATIONS, ANALYTICS, INSIGHTS,
     findMarketByShortName, findMarketById, findCropById, findCropByName, getCropImage,
+    getCropMarketPrice, getTransportCost, getMarketOptions,
     getFeaturedCropUpdate, getBestMarketToday, getRisingCropsForMarket, getInsightForCrop,
     getForecastSeries, getNotifications
   };

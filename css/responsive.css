@@ -105,3 +105,15 @@
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }
+
+@media (max-width: 720px){
+  .period-toggle{ width:100%; }
+  .period-toggle button{ flex:1; padding-left:10px; padding-right:10px; }
+  .canvas-wrap canvas{ height:240px !important; }
+  .profit-form-grid{ grid-template-columns:1fr; }
+  .profit-form-full{ grid-column:auto; }
+  .appearance-option{ align-items:flex-start; flex-direction:column; }
+  .appearance-choice{ width:100%; }
+  .appearance-choice button{ flex:1; }
+  .recommendation-actions .btn{ width:100%; }
+}

@@ -68,11 +68,13 @@ const AgriStore = (() => {
 
   // ---------- Preferences (dark mode, notifications, language) ----------
   function getPrefs(){
-    return _read(KEYS.PREFS, {
-      darkMode: false,
-      notifications: true,
-      language: 'en'
-    });
+    const prefs = _read(KEYS.PREFS, {});
+    return {
+      notifications: prefs.notifications !== false,
+      language: prefs.language || 'en',
+      theme: prefs.theme || (prefs.darkMode ? 'dark' : 'system'),
+      textSize: prefs.textSize || 'medium'
+    };
   }
   function savePrefs(prefs){ return _write(KEYS.PREFS, prefs); }
 
