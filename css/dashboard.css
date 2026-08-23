@@ -557,7 +557,7 @@ body.dark-mode .bottom-nav{ background:#18201B; border-color:#29332D; }
   background:var(--white);
   box-shadow:0 14px 34px rgba(22,48,36,.16), 0 2px 8px rgba(22,48,36,.06);
 }
-.modern-select.open .modern-select-menu{ display:block; }
+.modern-select-menu.portal-open{ display:block; }
 .modern-select-option{
   width:100%;
   min-height:38px;
@@ -648,4 +648,19 @@ body.dark-mode .modern-select-option.selected{ background:#254633; color:#F4F8F5
   .modern-select-chevron{ width:24px; height:24px; flex-basis:24px; }
   .modern-select-option{ min-height:34px; padding:6px 8px 6px 10px; font-size:.80rem; }
   .modern-select-menu{ max-height:230px; }
+}
+
+
+/* Dropdown portal overlay fix:
+   menus are mounted under <body> so cards/modals cannot clip their options. */
+.modern-select-menu{
+  position:fixed;
+  margin:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  isolation:isolate;
+  z-index:99999 !important;
+}
+.modern-select-menu.portal-open{
+  display:block !important;
 }

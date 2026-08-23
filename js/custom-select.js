@@ -13,9 +13,38 @@
     return opt ? opt.textContent.trim() : 'Select an option';
   }
 
+  function positionMenu(instance) {
+    const { button, menu } = instance;
+    const rect = button.getBoundingClientRect();
+    const gap = 6;
+    const viewportH = window.innerHeight;
+    const viewportW = window.innerWidth;
+    const desiredMax = 280;
+    const below = viewportH - rect.bottom - gap;
+    const above = rect.top - gap;
+    const openUp = below < 180 && above > below;
+
+    menu.style.position = 'fixed';
+    menu.style.left = `${Math.max(8, Math.min(rect.left, viewportW - rect.width - 8))}px`;
+    menu.style.width = `${rect.width}px`;
+    menu.style.minWidth = `${rect.width}px`;
+    menu.style.maxWidth = `${Math.max(rect.width, 360)}px`;
+    menu.style.zIndex = '99999';
+    menu.style.maxHeight = `${Math.max(120, Math.min(desiredMax, (openUp ? above : below) - 8))}px`;
+
+    if (openUp) {
+      menu.style.top = 'auto';
+      menu.style.bottom = `${viewportH - rect.top + gap}px`;
+    } else {
+      menu.style.bottom = 'auto';
+      menu.style.top = `${rect.bottom + gap}px`;
+    }
+  }
+
   function close(instance, restoreFocus = false) {
     if (!instance || !instance.wrapper.classList.contains('open')) return;
     instance.wrapper.classList.remove('open');
+    instance.menu.classList.remove('portal-open');
     instance.button.setAttribute('aria-expanded', 'false');
     if (restoreFocus) instance.button.focus();
     if (openInstance === instance) openInstance = null;
@@ -73,10 +102,13 @@
     buildOptions(instance);
     sync(instance);
     instance.wrapper.classList.add('open');
+    instance.menu.classList.add('portal-open');
     instance.button.setAttribute('aria-expanded', 'true');
     openInstance = instance;
+    positionMenu(instance);
 
     requestAnimationFrame(() => {
+      positionMenu(instance);
       const selected = instance.menu.querySelector('.modern-select-option.selected:not(:disabled)');
       selected?.scrollIntoView({ block: 'nearest' });
     });
@@ -116,7 +148,8 @@
     if (select.id) menu.id = `${select.id}-menu`;
 
     select.parentNode.insertBefore(wrapper, select);
-    wrapper.append(select, button, menu);
+    wrapper.append(select, button);
+    document.body.appendChild(menu);
     select.classList.add('native-select-source');
 
     const instance = { select, wrapper, button, value, menu };
@@ -172,8 +205,20 @@
   }
 
   document.addEventListener('click', (event) => {
-    if (openInstance && !openInstance.wrapper.contains(event.target)) close(openInstance);
+    if (
+      openInstance &&
+      !openInstance.wrapper.contains(event.target) &&
+      !openInstance.menu.contains(event.target)
+    ) close(openInstance);
   });
+
+  window.addEventListener('resize', () => {
+    if (openInstance) positionMenu(openInstance);
+  });
+
+  window.addEventListener('scroll', () => {
+    if (openInstance) positionMenu(openInstance);
+  }, true);
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && openInstance) close(openInstance, true);
