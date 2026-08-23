@@ -117,3 +117,8 @@
   .appearance-choice button{ flex:1; }
   .recommendation-actions .btn{ width:100%; }
 }
+
+@media (max-width: 620px){
+  .appearance-choice{ width:100%; max-width:none; flex-basis:auto; }
+  .appearance-choice button{ padding:9px 6px; font-size:.82rem; }
+}

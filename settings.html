@@ -129,8 +129,14 @@
         <input type="text" id="editLastName">
       </div>
       <div class="form-group">
-        <label for="editPassword">Password</label>
-        <input type="password" id="editPassword" placeholder="Enter a new password">
+        <label for="editPassword">Current Password</label>
+        <div class="input-icon-field pass-field">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input type="password" id="editPassword" placeholder="Enter your current password" autocomplete="current-password">
+          <button type="button" class="pass-toggle" data-target="editPassword" aria-label="Show password"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <div class="field-hint">Required to confirm changes to your name.</div>
+        <div class="field-error"></div>
       </div>
       <div class="settings-modal-actions">
         <button type="button" class="btn btn-outline" id="cancelProfileEdit">Cancel</button>
@@ -401,25 +407,48 @@
   document.getElementById('cancelProfileEdit').addEventListener('click', closeProfileEditModal);
   profileEditOverlay.addEventListener('click', (e) => { if(e.target === profileEditOverlay) closeProfileEditModal(); });
 
+  document.getElementById('profileEditOverlay').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pass-toggle');
+    if(!btn) return;
+    const input = document.getElementById(btn.dataset.target);
+    if(!input) return;
+    const shouldShow = input.type === 'password';
+    input.type = shouldShow ? 'text' : 'password';
+    btn.setAttribute('aria-pressed', String(shouldShow));
+    btn.setAttribute('aria-label', shouldShow ? 'Hide password' : 'Show password');
+    const icon = btn.querySelector('i');
+    icon?.classList.toggle('fa-eye', !shouldShow);
+    icon?.classList.toggle('fa-eye-slash', shouldShow);
+  });
+
   document.getElementById('profileEditForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const firstName = document.getElementById('editFirstName').value.trim();
     const lastName = document.getElementById('editLastName').value.trim();
-    const password = document.getElementById('editPassword').value.trim();
+    const passwordField = document.getElementById('editPassword');
+    const password = passwordField.value;
+    const passwordGroup = passwordField.closest('.form-group');
+    AgriUtils.clearFieldError(passwordGroup);
 
     if(!firstName || !lastName){
       AgriUtils.toast('First name and last name are required.', 'error');
       return;
     }
-    if(password && !AgriUtils.isValidPassword(password)){
-      AgriUtils.toast('Password must be at least 8 characters.', 'error');
+
+    if(!password){
+      AgriUtils.setFieldError(passwordGroup, 'Enter your current password to save your name changes.');
+      return;
+    }
+
+    const user = AgriStore.findUserByEmail(session.email);
+    if(!user || user.password !== password){
+      AgriUtils.setFieldError(passwordGroup, 'Current password is incorrect.');
       return;
     }
 
     AgriStore.updateUser(session.email, {
       firstName,
-      lastName,
-      ...(password ? { password } : {})
+      lastName
     });
 
     AgriUtils.toast('Profile updated successfully.', 'success', 'Saved');
