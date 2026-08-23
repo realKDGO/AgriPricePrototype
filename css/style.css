@@ -352,3 +352,138 @@ html[data-text-size="large"]{ font-size:18px; }
 @media (width: 1440px) and (height: 1024px) {
   body { min-height: 1024px; }
 }
+
+
+/* AGRIPRICE STRICT 1440x1024 PROTOTYPE - NO PAGE SCROLL */
+@media (min-width: 1200px) and (min-height: 900px) {
+  html, body {
+    height: 100%;
+    max-height: 1024px;
+    overflow: hidden !important;
+  }
+
+  body {
+    min-height: 0 !important;
+  }
+
+  .app,
+  .app-shell,
+  .dashboard-layout,
+  .layout,
+  .page-wrapper,
+  .wrapper {
+    height: 100vh !important;
+    max-height: 1024px !important;
+    overflow: hidden !important;
+  }
+
+  .main-content,
+  main,
+  .content,
+  .page-content,
+  .dashboard-content {
+    height: calc(100vh - 56px) !important;
+    max-height: calc(1024px - 56px) !important;
+    overflow: hidden !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .topbar,
+  .top-bar,
+  header.topbar,
+  .header {
+    min-height: 52px !important;
+    height: 52px !important;
+  }
+
+  h1 { font-size: 1.6rem !important; margin: 0 0 10px !important; }
+  h2 { font-size: 1.2rem !important; margin: 0 0 8px !important; }
+  h3 { font-size: 1rem !important; margin: 0 0 6px !important; }
+
+  .card,
+  .panel,
+  .section,
+  .settings-card,
+  .form-card,
+  .result-card {
+    padding: 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .grid,
+  .cards-grid,
+  .stats-grid,
+  .dashboard-grid,
+  .form-grid {
+    gap: 10px !important;
+  }
+
+  .form-group { margin-bottom: 10px !important; }
+  label { margin-bottom: 4px !important; }
+  input, select, textarea, button { min-height: 34px !important; }
+  textarea { min-height: 70px !important; max-height: 90px !important; }
+
+  table {
+    font-size: 0.88rem !important;
+    line-height: 1.15 !important;
+  }
+  th, td {
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
+
+  canvas,
+  .chart,
+  .chart-container,
+  .graph,
+  .graph-container {
+    max-height: 300px !important;
+  }
+
+  .sidebar {
+    overflow: hidden !important;
+  }
+
+  /* Crop Prices */
+  .crop-prices-page .crop-grid,
+  .crop-prices-page .cards-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .crop-prices-page .crop-card,
+  .crop-prices-page .crop-item {
+    padding: 10px !important;
+    min-height: 0 !important;
+  }
+
+  /* Forecasting */
+  .forecast-grid,
+  .forecasting-grid {
+    grid-template-columns: minmax(280px, .8fr) minmax(0, 1.7fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Market recommendation and profit estimation */
+  .market-grid,
+  .recommendation-grid,
+  .profit-grid,
+  .estimation-grid {
+    gap: 10px !important;
+  }
+
+  /* Settings */
+  .settings-layout,
+  .settings-grid {
+    gap: 10px !important;
+  }
+  .settings-section,
+  .settings-card {
+    padding: 10px !important;
+  }
+
+  /* Remove excess vertical spacing from common utility classes */
+  .mt-4, .mt-5, .mt-6, .my-4, .my-5, .my-6 { margin-top: 10px !important; }
+  .mb-4, .mb-5, .mb-6, .my-4, .my-5, .my-6 { margin-bottom: 10px !important; }
+  .py-4, .py-5, .py-6 { padding-top: 10px !important; padding-bottom: 10px !important; }
+}
