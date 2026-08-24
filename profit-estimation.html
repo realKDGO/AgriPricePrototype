@@ -46,6 +46,50 @@
   }
 }
 </style>
+
+<style>
+@media (min-width:900px){
+  .profit-form-grid{
+    display:block !important;
+    width:100% !important;
+    max-width:none !important;
+  }
+
+  .profit-form-grid > .pe-form-grid{
+    width:100% !important;
+    max-width:none !important;
+  }
+
+  .pe-form-grid{
+    display:grid !important;
+    grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+    column-gap:16px !important;
+    row-gap:12px !important;
+    width:100% !important;
+    max-width:none !important;
+  }
+
+  .pe-form-grid > .form-group{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    margin:0 !important;
+  }
+
+  .pe-form-grid input,
+  .pe-form-grid select,
+  .pe-form-grid .modern-select,
+  .pe-form-grid .modern-select-button{
+    width:100% !important;
+    max-width:none !important;
+    box-sizing:border-box !important;
+  }
+
+  .pe-form-grid .pe-market-full{
+    grid-column:1 / -1 !important;
+  }
+}
+</style>
 </head>
 <body class="app">
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
