@@ -141,10 +141,9 @@
         </div>
 
         <div class="card card-pad profit-summary-card">
-          <h3 style="margin-bottom:8px;">Estimated Earnings</h3>
+          <h3 style="margin-bottom:8px;">Estimated Net Earnings</h3>
           <p style="margin-bottom:18px;">Results update automatically whenever you change an input.</p>
           <div class="profit-result-row"><span class="pr-label">Gross Sales</span><span class="pr-value" id="peGross">₱0.00</span></div>
-          <div class="profit-result-row"><span class="pr-label">Transportation</span><span class="pr-value" id="peTransportOut">₱0.00</span></div>
           <div class="profit-result-row"><span class="pr-label">Other Expenses</span><span class="pr-value" id="peOtherOut">₱0.00</span></div>
           <div class="profit-result-row"><span class="pr-label">Total Expenses</span><span class="pr-value" id="peTotalExpenses">₱0.00</span></div>
           <div class="profit-result-row total"><span class="pr-label">Estimated Net Earnings</span><span class="pr-value" id="peNet">₱0.00</span></div>
@@ -167,6 +166,7 @@
   const peMarket = document.getElementById('peMarket');
   const qtyEl = document.getElementById('peQty');
   const otherExpensesEl = document.getElementById('peOtherExpenses');
+  
   const params = new URLSearchParams(window.location.search);
 
   peCrop.innerHTML = AgriData.CROPS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
@@ -180,24 +180,32 @@
   function calculate(){
     const qty = Math.max(Number(qtyEl.value) || 0, 0);
     const otherExpenses = Math.max(Number(otherExpensesEl.value) || 0, 0);
-    const price = AgriData.getCropMarketPrice(peCrop.value, peMarket.value);
-    const gross = qty * price;
+    const price = AgriData.getCropMarketPrice(peCrop.value, peMarket.value) || 0;
+
+    const gross = price * qty;
     const totalExpenses = otherExpenses;
     const net = gross - totalExpenses;
     const margin = gross > 0 ? (net / gross) * 100 : 0;
 
     document.getElementById('peSellPrice').value = AgriUtils.peso(price);
-    document.getElementById('peGross').textContent = AgriUtils.peso(gross);
-    document.getElementById('peTransportOut').textContent = AgriUtils.peso(transport);
-    document.getElementById('peOtherOut').textContent = AgriUtils.peso(otherExpenses);
-    document.getElementById('peTotalExpenses').textContent = AgriUtils.peso(totalExpenses);
-    document.getElementById('peNet').textContent = AgriUtils.peso(net);
-    document.getElementById('peMargin').textContent = `${Math.round(margin)}%`;
-    document.getElementById('peNet').classList.toggle('negative-value', net < 0);
+
+    const grossEl = document.getElementById('peGross');
+    const totalExpensesEl = document.getElementById('peTotalExpenses');
+    const netEl = document.getElementById('peNet');
+    const marginEl = document.getElementById('peMargin');
+
+    if (grossEl) grossEl.textContent = AgriUtils.pesoRound(gross);
+    if (totalExpensesEl) totalExpensesEl.textContent = AgriUtils.pesoRound(totalExpenses);
+    if (netEl) netEl.textContent = AgriUtils.pesoRound(net);
+    if (marginEl) marginEl.textContent = `${margin.toFixed(1)}%`;
+
+    window.AgriCaptureFields?.syncAll?.();
   }
 
-  [qtyEl, otherExpensesEl].forEach(el => el.addEventListener('input', calculate));
+  
   [peCrop, peMarket].forEach(el => el.addEventListener('change', calculate));
+  qtyEl.addEventListener('input', calculate);
+  otherExpensesEl.addEventListener('input', calculate);
   calculate();
 </script>
 <script src="js/custom-select.js"></script>
