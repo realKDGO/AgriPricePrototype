@@ -18,6 +18,34 @@
   .pe-form-grid .pe-market-full{grid-column:1 / -1!important}
 }
 </style>
+
+<style>
+@media (min-width:900px){
+  .profit-form-grid,
+  .pe-form-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    grid-auto-rows:auto !important;
+    align-items:start !important;
+    gap:12px 14px !important;
+  }
+  .pe-form-grid > .form-group,
+  .profit-form-grid > .form-group{
+    width:100% !important;
+    margin-bottom:0 !important;
+  }
+  .pe-form-grid .pe-market-full,
+  .profit-form-grid .pe-market-full{
+    grid-column:1 / -1 !important;
+  }
+  .pe-form-grid input,
+  .pe-form-grid .modern-select,
+  .profit-form-grid input,
+  .profit-form-grid .modern-select{
+    width:100% !important;
+  }
+}
+</style>
 </head>
 <body class="app">
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
