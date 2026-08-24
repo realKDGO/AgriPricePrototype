@@ -52,15 +52,15 @@
               <input type="text" id="peSellPrice" readonly>
             </div>
             <div class="form-group">
-              <label for="peTransport">Transportation</label>
-              <input type="text" id="peTransport" readonly>
+              <label for="peTransport">Transportation Cost (₱)</label>
+              <input type="number" id="peTransport" min="0" step="0.5" value="0" placeholder="Enter actual transportation cost">
             </div>
             <div class="form-group profit-form-full">
               <label for="peOtherExpenses">Other Expenses (₱)</label>
               <input type="number" id="peOtherExpenses" min="0" step="0.5" value="0" placeholder="Seeds, packaging, labor, fees, etc.">
             </div>
           </div>
-          <p class="field-hint">Price and transportation use the same prototype dataset as Crop Prices and Market Recommendation.</p>
+          <p class="field-hint">Selling price uses the shared market-price dataset. Enter your actual transportation and other expenses based on your situation.</p>
         </div>
 
         <div class="card card-pad profit-summary-card">
@@ -89,6 +89,7 @@
   const peCrop = document.getElementById('peCrop');
   const peMarket = document.getElementById('peMarket');
   const qtyEl = document.getElementById('peQty');
+  const transportEl = document.getElementById('peTransport');
   const otherExpensesEl = document.getElementById('peOtherExpenses');
   const params = new URLSearchParams(window.location.search);
 
@@ -102,16 +103,15 @@
 
   function calculate(){
     const qty = Math.max(Number(qtyEl.value) || 0, 0);
+    const transport = Math.max(Number(transportEl.value) || 0, 0);
     const otherExpenses = Math.max(Number(otherExpensesEl.value) || 0, 0);
     const price = AgriData.getCropMarketPrice(peCrop.value, peMarket.value);
-    const transport = AgriData.getTransportCost(peMarket.value, qty);
     const gross = qty * price;
     const totalExpenses = transport + otherExpenses;
     const net = gross - totalExpenses;
     const margin = gross > 0 ? (net / gross) * 100 : 0;
 
     document.getElementById('peSellPrice').value = AgriUtils.peso(price);
-    document.getElementById('peTransport').value = AgriUtils.peso(transport);
     document.getElementById('peGross').textContent = AgriUtils.peso(gross);
     document.getElementById('peTransportOut').textContent = AgriUtils.peso(transport);
     document.getElementById('peOtherOut').textContent = AgriUtils.peso(otherExpenses);
@@ -121,10 +121,11 @@
     document.getElementById('peNet').classList.toggle('negative-value', net < 0);
   }
 
-  [qtyEl, otherExpensesEl].forEach(el => el.addEventListener('input', calculate));
+  [qtyEl, transportEl, otherExpensesEl].forEach(el => el.addEventListener('input', calculate));
   [peCrop, peMarket].forEach(el => el.addEventListener('change', calculate));
   calculate();
 </script>
 <script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
 </body>
 </html>

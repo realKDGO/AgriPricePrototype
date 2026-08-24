@@ -23,7 +23,7 @@
 
     <main class="page-body">
       <div class="page-head">
-        <div><p>Find the most profitable market for your crop right now.</p></div>
+        <div><p>Compare current selling prices and find the strongest market option for your crop.</p></div>
       </div>
 
       <div class="card market-today-card" id="marketSpotlightCard" style="display:none; margin-bottom:22px;">
@@ -44,8 +44,8 @@
             <div class="mt-stat-lab">Distance</div>
           </div>
           <div class="mt-stat">
-            <div class="mt-stat-val" id="spotlightTransport">₱0</div>
-            <div class="mt-stat-lab">Transport Cost</div>
+            <div class="mt-stat-val" id="spotlightTopPrice">₱0</div>
+            <div class="mt-stat-lab">Highest Crop Price</div>
           </div>
         </div>
         <div class="card-head" style="margin-bottom:12px;"><h3>Crops Contributing to This Recommendation</h3></div>
@@ -82,16 +82,16 @@
             <div class="m-value" id="recSellPrice">₱0</div>
           </div>
           <div class="metric-box soil">
-            <div class="m-label">Transport Cost</div>
-            <div class="m-value" id="recTransport">₱0</div>
+            <div class="m-label">Quantity</div>
+            <div class="m-value" id="recQuantity">0 kg</div>
           </div>
           <div class="metric-box amber">
-            <div class="m-label">Estimated Profit</div>
-            <div class="m-value" id="recProfit">₱0</div>
+            <div class="m-label">Estimated Gross Sales</div>
+            <div class="m-value" id="recGross">₱0</div>
           </div>
           <div class="metric-box">
-            <div class="m-label">Profit Margin</div>
-            <div class="m-value" id="recMargin">0%</div>
+            <div class="m-label">Market Rank</div>
+            <div class="m-value" id="recRank">#1</div>
           </div>
         </div>
 
@@ -103,7 +103,7 @@
 
         <div class="card-head"><h3>All Markets Compared</h3></div>
         <table class="data-table">
-          <thead><tr><th>Market</th><th>Price / kg</th><th>Transport</th><th>Est. Profit</th><th>Status</th></tr></thead>
+          <thead><tr><th>Market</th><th>Price / kg</th><th>Est. Gross Sales</th><th>Price Difference</th><th>Status</th></tr></thead>
           <tbody id="recTableBody"></tbody>
         </table>
       </div>
@@ -139,7 +139,8 @@
       document.getElementById('spotlightMarketName').textContent = market.name;
       document.getElementById('spotlightCropsCount').textContent = risingCrops.length;
       document.getElementById('spotlightDistance').textContent = `${market.distanceKm} km`;
-      document.getElementById('spotlightTransport').textContent = AgriUtils.pesoRound(market.transportCost);
+      const topPrice = risingCrops.length ? Math.max(...risingCrops.map(r => Number(r.price) || 0)) : 0;
+      document.getElementById('spotlightTopPrice').textContent = AgriUtils.pesoRound(topPrice);
 
       const listEl = document.getElementById('spotlightCropsList');
       listEl.innerHTML = risingCrops.length
@@ -169,7 +170,11 @@
     const crop = AgriData.CROPS.find(c => c.id === cropId);
     const qty = Math.max(Number(document.getElementById('recQty').value) || 1, 1);
 
-    const results = AgriData.getMarketOptions(cropId, qty);
+    const results = AgriData.MARKETS.map(market => {
+      const price = AgriData.getCropMarketPrice(cropId, market.id);
+      return { market, price, gross: price * qty };
+    }).sort((a, b) => b.price - a.price);
+
     const best = results[0];
     const bestStatus = statusForRank(1, results.length);
 
@@ -182,29 +187,31 @@
     statusEl.className = 'status-pill ' + bestStatus.cls;
 
     document.getElementById('recSellPrice').textContent = AgriUtils.pesoRound(best.price);
-    document.getElementById('recTransport').textContent = AgriUtils.pesoRound(best.transport);
-    document.getElementById('recProfit').textContent = AgriUtils.pesoRound(best.profit);
-    document.getElementById('recMargin').textContent = Math.round(best.margin) + '%';
+    document.getElementById('recQuantity').textContent = `${qty.toLocaleString()} kg`;
+    document.getElementById('recGross').textContent = AgriUtils.pesoRound(best.gross);
+    document.getElementById('recRank').textContent = '#1';
 
     const tbody = document.getElementById('recTableBody');
     tbody.innerHTML = results.map((r, idx) => {
-      const s = statusForRank(idx + 1, results.length);
+      const state = statusForRank(idx + 1, results.length);
+      const difference = best.price - r.price;
       return `
         <tr>
           <td>${r.market.name}</td>
           <td class="price-mono">${AgriUtils.pesoRound(r.price)}</td>
-          <td class="price-mono">${AgriUtils.pesoRound(r.transport)}</td>
-          <td class="price-mono">${AgriUtils.pesoRound(r.profit)}</td>
-          <td><span class="status-pill ${s.cls}">${s.label}</span></td>
+          <td class="price-mono">${AgriUtils.pesoRound(r.gross)}</td>
+          <td class="price-mono">${difference === 0 ? 'Best price' : `-${AgriUtils.pesoRound(difference)}/kg`}</td>
+          <td><span class="status-pill ${state.cls}">${state.label}</span></td>
         </tr>
       `;
     }).join('');
 
     document.getElementById('continueProfitBtn').href = `profit-estimation.html?crop=${encodeURIComponent(cropId)}&market=${encodeURIComponent(best.market.id)}&qty=${encodeURIComponent(qty)}&from=recommendation`;
 
-    AgriUtils.toast(`${best.market.name} offers the best estimated profit.`, 'success', 'Recommendation ready');
+    AgriUtils.toast(`${best.market.name} has the highest current selling price. Add your actual expenses in Profit Estimation.`, 'success', 'Recommendation ready');
   });
 </script>
 <script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
 </body>
 </html>

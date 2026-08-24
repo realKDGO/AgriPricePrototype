@@ -132,4 +132,29 @@
   .form-group label { margin-bottom:4px; font-size:.78rem; }
   input, select, textarea { min-height:36px; padding-top:7px; padding-bottom:7px; }
   .btn { min-height:36px; padding-top:8px; padding-bottom:8px; }
+
+
+  /* Capture stability: avoid transient states and unsupported blur/sticky
+     effects while the desktop prototype is being imported into Figma. */
+  html { scroll-behavior:auto !important; }
+  body.app *, body.app *::before, body.app *::after {
+    animation:none !important;
+    transition:none !important;
+  }
+  .topbar {
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    background:var(--cream) !important;
+  }
+  .inline-feedback {
+    position:relative !important;
+    top:auto !important;
+  }
+  .settings-modal {
+    overflow:visible !important;
+  }
+  .bottom-nav {
+    display:none !important;
+  }
+
 }

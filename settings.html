@@ -318,7 +318,7 @@
         const user = AgriStore.findUserByEmail(session.email);
         let valid = true;
         if(!cur.value){ AgriUtils.setFieldError(cur.closest('.form-group'), 'Enter your current password.'); valid = false; }
-        else if(user.password !== cur.value){ AgriUtils.setFieldError(cur.closest('.form-group'), 'Current password is incorrect.'); valid = false; }
+        else if(!user || user.password !== cur.value){ AgriUtils.setFieldError(cur.closest('.form-group'), 'Current password is incorrect.'); valid = false; }
 
         if(!next.value){ AgriUtils.setFieldError(next.closest('.form-group'), 'Enter a new password.'); valid = false; }
         else if(!AgriUtils.isValidPassword(next.value)){ AgriUtils.setFieldError(next.closest('.form-group'), 'Password must be at least 8 characters.'); valid = false; }
@@ -370,7 +370,7 @@
       });
     }
 
-    document.querySelectorAll('.pass-toggle').forEach(btn => {
+    settingsModalBody.querySelectorAll('.pass-toggle').forEach(btn => {
       btn.addEventListener('click', () => {
         const input = document.getElementById(btn.dataset.target);
         if(!input) return;
@@ -458,5 +458,6 @@
   });
 </script>
 <script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
 </body>
 </html>

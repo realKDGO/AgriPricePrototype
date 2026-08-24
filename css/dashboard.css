@@ -476,17 +476,7 @@ body.dark-mode .bottom-nav{ background:#18201B; border-color:#29332D; }
 }
 .modern-select.open{ z-index:120; }
 .modern-select .native-select-source{
-  position:absolute !important;
-  width:1px !important;
-  height:1px !important;
-  padding:0 !important;
-  margin:-1px !important;
-  overflow:hidden !important;
-  clip:rect(0,0,0,0) !important;
-  white-space:nowrap !important;
-  border:0 !important;
-  opacity:0 !important;
-  pointer-events:none !important;
+  display:none !important;
 }
 .modern-select-trigger{
   width:100%;
@@ -663,4 +653,47 @@ body.dark-mode .modern-select-option.selected{ background:#254633; color:#F4F8F5
 }
 .modern-select-menu.portal-open{
   display:block !important;
+}
+
+
+/* Figma Capture-safe native input values.
+   The visible value is ordinary DOM text when the field is not being edited. */
+.capture-field-parent {
+  position: relative !important;
+}
+.capture-field-mirror {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text, #1f2933);
+  background: transparent;
+}
+.capture-field-mirror.is-placeholder {
+  color: var(--muted, #7a857f);
+  opacity: .78;
+}
+.capture-field-mirror[hidden] {
+  display: none !important;
+}
+input[data-capture-mirror="true"]:not(.capture-field-editing) {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  caret-color: transparent !important;
+}
+input[data-capture-mirror="true"]:not(.capture-field-editing)::placeholder {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+input[data-capture-mirror="true"].capture-field-editing {
+  -webkit-text-fill-color: currentColor !important;
+}
+body.dark .capture-field-mirror,
+html[data-theme="dark"] .capture-field-mirror {
+  color: var(--text, #e8eee9);
 }

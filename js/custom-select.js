@@ -7,6 +7,7 @@
 (() => {
   const ENHANCED = 'data-agri-select-enhanced';
   let openInstance = null;
+  const instances = new Set();
 
   function optionText(select) {
     const opt = select.options[select.selectedIndex];
@@ -15,29 +16,35 @@
 
   function positionMenu(instance) {
     const { button, menu } = instance;
+    if (!button.isConnected || !menu.isConnected) return;
+
     const rect = button.getBoundingClientRect();
     const gap = 6;
+    const edge = 8;
     const viewportH = window.innerHeight;
     const viewportW = window.innerWidth;
     const desiredMax = 280;
-    const below = viewportH - rect.bottom - gap;
-    const above = rect.top - gap;
+    const below = Math.max(0, viewportH - rect.bottom - gap - edge);
+    const above = Math.max(0, rect.top - gap - edge);
     const openUp = below < 180 && above > below;
+    const available = Math.max(96, openUp ? above : below);
+    const width = Math.min(rect.width, viewportW - edge * 2);
+    const left = Math.max(edge, Math.min(rect.left, viewportW - width - edge));
 
     menu.style.position = 'fixed';
-    menu.style.left = `${Math.max(8, Math.min(rect.left, viewportW - rect.width - 8))}px`;
-    menu.style.width = `${rect.width}px`;
-    menu.style.minWidth = `${rect.width}px`;
-    menu.style.maxWidth = `${Math.max(rect.width, 360)}px`;
+    menu.style.left = `${left}px`;
+    menu.style.width = `${width}px`;
+    menu.style.minWidth = `${width}px`;
+    menu.style.maxWidth = `${viewportW - edge * 2}px`;
     menu.style.zIndex = '99999';
-    menu.style.maxHeight = `${Math.max(120, Math.min(desiredMax, (openUp ? above : below) - 8))}px`;
+    menu.style.maxHeight = `${Math.min(desiredMax, available)}px`;
 
     if (openUp) {
       menu.style.top = 'auto';
-      menu.style.bottom = `${viewportH - rect.top + gap}px`;
+      menu.style.bottom = `${Math.max(edge, viewportH - rect.top + gap)}px`;
     } else {
       menu.style.bottom = 'auto';
-      menu.style.top = `${rect.bottom + gap}px`;
+      menu.style.top = `${Math.min(viewportH - edge, rect.bottom + gap)}px`;
     }
   }
 
@@ -152,8 +159,9 @@
     document.body.appendChild(menu);
     select.classList.add('native-select-source');
 
-    const instance = { select, wrapper, button, value, menu };
+    const instance = { select, wrapper, button, value, menu, optionObserver: null };
     select._agriModernSelect = instance;
+    instances.add(instance);
 
     buildOptions(instance);
     sync(instance);
@@ -196,7 +204,18 @@
       buildOptions(instance);
       sync(instance);
     });
+    instance.optionObserver = optionObserver;
     optionObserver.observe(select, { childList: true, subtree: true, attributes: true });
+  }
+
+  function cleanupDisconnected() {
+    instances.forEach(instance => {
+      if (instance.select.isConnected) return;
+      if (openInstance === instance) close(instance);
+      instance.optionObserver?.disconnect();
+      instance.menu.remove();
+      instances.delete(instance);
+    });
   }
 
   function enhanceAll(root = document) {
@@ -232,6 +251,7 @@
         if (node.nodeType === 1) enhanceAll(node);
       });
     });
+    cleanupDisconnected();
   });
   observer.observe(document.body, { childList: true, subtree: true });
 })();

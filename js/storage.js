@@ -55,7 +55,11 @@ const AgriStore = (() => {
     // Keep session in sync if this is the active user
     const session = getSession();
     if(session && session.email.toLowerCase() === email.toLowerCase()){
-      setSession({ ...session, ...updates, email: updates.email || session.email });
+      // Keep only profile-safe fields in the session. Passwords stay in the
+      // stored user record and are never copied into the active session.
+      const sessionUpdates = { ...updates };
+      delete sessionUpdates.password;
+      setSession({ ...session, ...sessionUpdates, email: updates.email || session.email });
     }
     return true;
   }
