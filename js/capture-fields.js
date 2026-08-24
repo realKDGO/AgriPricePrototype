@@ -43,7 +43,7 @@
     if (!input.isConnected) return;
 
     const text = displayValue(record);
-    mirror.textContent = text;
+    if (mirror.textContent !== text) mirror.textContent = text;
     mirror.classList.toggle('is-placeholder', !input.value && !!input.placeholder);
     mirror.classList.toggle('is-readonly', input.readOnly || input.disabled);
     position(record);
@@ -106,9 +106,20 @@
     syncAll();
   });
 
-  const observer = new MutationObserver(() => {
-    enhanceAll(document);
-    syncAll();
+  const observer = new MutationObserver((mutations) => {
+    let addedRelevantContent = false;
+
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType !== 1) return;
+        if (node.classList?.contains('capture-field-mirror')) return;
+        enhanceAll(node);
+        addedRelevantContent = true;
+      });
+    });
+
+    if (addedRelevantContent) syncAll();
+    else cleanup();
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });
 
@@ -117,7 +128,7 @@
 
   // Programmatic .value assignments do not emit input/change events.
   // A lightweight sync keeps capture mirrors correct for calculated/read-only fields.
-  setInterval(syncAll, 250);
+  setInterval(syncAll, 1000);
 
   window.AgriCaptureFields = { syncAll };
 })();
