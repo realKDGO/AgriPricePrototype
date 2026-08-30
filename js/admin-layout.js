@@ -14,6 +14,10 @@ const AgriAdminLayout = (() => {
  ['admin-forecasts.html','fa-chart-line','Forecast Monitoring']
  ]},
  {label:'Reports',items:[['admin-reports.html','fa-chart-column','Reports & Analytics']]},
+ {label:'Administration',items:[
+ ['admin-users.html','fa-users','User Management'],
+ ['admin-mao-accounts.html','fa-user-tie','MAO Accounts'],
+ ]},
  {label:'Account',items:[['admin-profile.html','fa-user-gear','Profile']]}
  ];
 
