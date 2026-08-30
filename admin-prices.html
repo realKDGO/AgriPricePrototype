@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/>
+<title>Price Management</title>
+</head>
+<body class="admin-app">
+<div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main">
+<header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head">
+<div><p>Add, update, search, and correct crop-market price records.</p></div>
+<div class="admin-actions"><button class="btn btn-primary" id="addPriceBtn"><i class="fa-solid fa-plus"></i> Add Price</button></div>
+</div>
+<div class="management-role-note admin-note"><i class="fa-solid fa-building-wheat"></i> You are using this shared agricultural management page as MAO Personnel.</div>
+<section class="admin-card">
+<div class="admin-toolbar">
+<div class="admin-search"><i class="fa-solid fa-magnifying-glass"></i><input id="priceSearch" placeholder="Search records..."/></div>
+<div class="admin-filter"><select id="priceCropFilter"></select></div>
+<div class="admin-filter"><select id="priceMarketFilter"></select></div>
+</div>
+<div class="admin-table-wrap">
+<table class="admin-table"><thead><tr><th>Crop</th><th>Market</th><th>Price / kg</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="priceRows"></tbody></table>
+</div>
+</section>
+<div class="admin-modal-overlay" id="priceModal">
+<div class="admin-modal">
+<div class="admin-modal-head"><h3 id="priceModalTitle">Add Price Record</h3><button class="admin-modal-close" data-close=""><i class="fa-solid fa-xmark"></i></button></div>
+<form id="priceForm">
+<input id="editPriceId" type="hidden"/>
+<div class="admin-form-grid">
+<div class="form-group"><label for="priceCrop">Crop</label><select id="priceCrop" required=""></select></div>
+<div class="form-group"><label for="priceMarket">Market</label><select id="priceMarket" required=""></select></div>
+<div class="form-group"><label for="priceValue">Price per kilogram (₱)</label><input id="priceValue" min="1" required="" step=".5" type="number" value="49"/></div>
+<div class="form-group"><label for="priceDate">Date</label><input id="priceDate" required="" type="date" value="2026-08-24"/></div>
+</div>
+<div class="admin-modal-actions"><button class="btn btn-outline" data-close="" type="button">Cancel</button><button class="btn btn-primary" type="submit">Save Price</button></div>
+</form>
+</div>
+</div>
+</main>
+</div>
+</div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+AgriAdminLayout.init('admin-prices.html','Price Management');
+
+const priceRows=AgriAdminUI.byId('priceRows'), search=AgriAdminUI.byId('priceSearch'), cf=AgriAdminUI.byId('priceCropFilter'), mf=AgriAdminUI.byId('priceMarketFilter');
+AgriAdminUI.fillSelect(cf,AgriAdminStore.getCrops(),'id','name','All Crops');
+AgriAdminUI.fillSelect(mf,AgriAdminStore.getMarkets(),'id','name','All Markets');
+AgriAdminUI.fillSelect(AgriAdminUI.byId('priceCrop'),AgriAdminStore.getCrops());
+AgriAdminUI.fillSelect(AgriAdminUI.byId('priceMarket'),AgriAdminStore.getMarkets());
+AgriAdminUI.bindModal('priceModal');
+function renderPrices(){
+  const q=search.value.toLowerCase(), crop=cf.value, market=mf.value;
+  const rows=AgriAdminStore.getPrices().filter(p=>(!q||`${p.crop} ${p.market}`.toLowerCase().includes(q))&&(!crop||p.cropId===crop)&&(!market||p.marketId===market));
+  priceRows.innerHTML=rows.slice(0,12).map(p=>`<tr>
+    <td>${p.crop}</td><td>${p.market}</td><td class="price-mono">${AgriAdminUI.peso(p.price)}</td><td>${p.date}</td>
+    <td><span class="admin-badge ${p.status==='Pending'?'pending':p.status==='Approved'?'approved':p.status==='Returned for Correction'?'returned':p.status==='Corrected'?'corrected':'active'}">${p.status}</span></td>
+    <td><div class="actions"><button class="admin-icon-btn" data-edit="${p.id}" title="Edit"><i class="fa-solid fa-pen"></i></button></div></td>
+  </tr>`).join('');
+  priceRows.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
+}
+function openAdd(){
+  AgriAdminUI.byId('priceModalTitle').textContent='Add Price Record'; AgriAdminUI.byId('editPriceId').value='';
+  AgriAdminUI.byId('priceValue').value='49'; AgriAdminUI.byId('priceDate').value='2026-08-24';
+  AgriAdminUI.openModal('priceModal'); window.AgriCaptureFields?.syncAll?.();
+}
+function openEdit(id){
+  const p=AgriAdminStore.getPrices().find(x=>x.id===id); if(!p)return;
+  AgriAdminUI.byId('priceModalTitle').textContent='Edit Price Record'; AgriAdminUI.byId('editPriceId').value=p.id;
+  AgriAdminUI.byId('priceCrop').value=p.cropId; AgriAdminUI.byId('priceMarket').value=p.marketId;
+  AgriAdminUI.byId('priceValue').value=p.price; AgriAdminUI.byId('priceDate').value=p.date;
+  AgriAdminUI.openModal('priceModal'); document.getElementById('priceCrop').dispatchEvent(new Event('change')); document.getElementById('priceMarket').dispatchEvent(new Event('change'));
+}
+AgriAdminUI.byId('addPriceBtn').onclick=openAdd;
+[search,cf,mf].forEach(el=>el.addEventListener(el===search?'input':'change',renderPrices));
+AgriAdminUI.byId('priceForm').onsubmit=e=>{
+ e.preventDefault(); const id=AgriAdminUI.byId('editPriceId').value; const crops=AgriAdminStore.getCrops(), markets=AgriAdminStore.getMarkets();
+ const cropId=AgriAdminUI.byId('priceCrop').value, marketId=AgriAdminUI.byId('priceMarket').value;
+ const role=AgriAdminLayout.getRole();
+ const previous=id?AgriAdminStore.getPrices().find(x=>x.id===id):null;
+ const status=role==='MAO'?'Pending':(id?'Approved':'Approved');
+ const rec={id:id||`p${Date.now()}`,cropId,crop:crops.find(c=>c.id===cropId)?.name||cropId,marketId,market:markets.find(m=>m.id===marketId)?.name||marketId,price:Number(AgriAdminUI.byId('priceValue').value),date:AgriAdminUI.byId('priceDate').value,status,submittedBy:role==='MAO'?'MAO Personnel':(previous?.submittedBy||'Administrator')};
+ let list=AgriAdminStore.getPrices(); if(id) list=list.map(x=>x.id===id?rec:x); else list.unshift(rec);
+ AgriAdminStore.savePrices(list); AgriAdminStore.log(id?'Price record corrected':'Price record added',`${rec.crop} • ${rec.market} • ${AgriAdminUI.peso(rec.price)}`,'fa-tags');
+ AgriAdminUI.closeModal('priceModal'); renderPrices(); AgriAdminUI.toast(role==='MAO'?'Price record saved and marked Pending for validation.':(id?'Price record updated.':'Price record added.'),'success','Price Management');
+};
+renderPrices();
+if(new URLSearchParams(location.search).get('action')==='add') setTimeout(openAdd,120);
+
+</script>
+</body>
+</html>

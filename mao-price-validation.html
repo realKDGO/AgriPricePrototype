@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/><title>Price Validation</title></head>
+<body class="admin-app"><div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main"><header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head">
+<div><p>Review agricultural price records before they are treated as approved information.</p></div>
+</div>
+<div class="mao-status-summary">
+<div class="mao-status-card"><span>Pending</span><strong id="valPending">0</strong></div>
+<div class="mao-status-card"><span>Approved</span><strong id="valApproved">0</strong></div>
+<div class="mao-status-card"><span>Returned for Correction</span><strong id="valReturned">0</strong></div>
+</div>
+<section class="admin-card">
+<div class="admin-toolbar">
+<div class="admin-search"><i class="fa-solid fa-magnifying-glass"></i><input id="validationSearch" placeholder="Search crop or market..."/></div>
+<div class="admin-filter"><select id="validationStatus"><option value="">All Statuses</option><option>Pending</option><option>Approved</option><option>Returned for Correction</option></select></div>
+<div class="admin-filter"><select id="validationCrop"></select></div>
+</div>
+<div class="admin-table-wrap">
+<table class="admin-table"><thead><tr><th>Crop</th><th>Market</th><th>Price/kg</th><th>Date</th><th>Submitted By</th><th>Status</th><th>Actions</th></tr></thead><tbody id="validationRows"></tbody></table>
+</div>
+</section>
+<div class="admin-modal-overlay" id="validationModal"><div class="admin-modal">
+<div class="admin-modal-head"><h3>Review Price Record</h3><button class="admin-modal-close" data-close=""><i class="fa-solid fa-xmark"></i></button></div>
+<div id="validationDetails"></div>
+<div class="form-group" style="margin-top:12px;"><label for="validationNote">Validation Note</label><textarea id="validationNote" placeholder="Optional note, required when returning for correction" style="width:100%;min-height:72px;border:1px solid var(--mist-dark);border-radius:10px;padding:9px;"></textarea></div>
+<div class="admin-modal-actions"><button class="btn btn-outline" data-close="">Cancel</button><button class="btn btn-danger" id="returnPriceBtn">Return for Correction</button><button class="btn btn-primary" id="approvePriceBtn">Approve</button></div>
+</div></div>
+</main></div></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+const PAGE_ROLE=AgriAdminLayout.init('mao-price-validation.html','Price Validation','MAO');
+
+let selectedValidation=null;
+AgriAdminUI.bindModal('validationModal');
+AgriAdminUI.fillSelect(document.getElementById('validationCrop'),AgriAdminStore.getCrops(),'id','name','All Crops');
+const vs=document.getElementById('validationSearch'),vf=document.getElementById('validationStatus'),vc=document.getElementById('validationCrop');
+
+function badgeClass(status){return status==='Pending'?'pending':status==='Approved'?'approved':'returned';}
+function updateCounts(){
+ const l=AgriAdminStore.getPrices();
+ document.getElementById('valPending').textContent=l.filter(x=>x.status==='Pending').length;
+ document.getElementById('valApproved').textContent=l.filter(x=>x.status==='Approved').length;
+ document.getElementById('valReturned').textContent=l.filter(x=>x.status==='Returned for Correction').length;
+}
+function renderValidation(){
+ const q=vs.value.toLowerCase(),st=vf.value,crop=vc.value;
+ const rows=AgriAdminStore.getPrices().filter(p=>(!q||`${p.crop} ${p.market}`.toLowerCase().includes(q))&&(!st||p.status===st)&&(!crop||p.cropId===crop));
+ document.getElementById('validationRows').innerHTML=rows.slice(0,12).map(p=>`<tr>
+ <td>${p.crop}</td><td>${p.market}</td><td>${AgriAdminUI.peso(p.price)}</td><td>${p.date}</td><td>${p.submittedBy||'MAO'}</td>
+ <td><span class="admin-badge ${badgeClass(p.status)}">${p.status}</span></td>
+ <td><div class="mao-validation-actions"><button class="btn btn-outline" data-review="${p.id}">Review</button></div></td></tr>`).join('');
+ document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>reviewRecord(b.dataset.review));
+ updateCounts();
+}
+function reviewRecord(id){
+ selectedValidation=AgriAdminStore.getPrices().find(x=>x.id===id);if(!selectedValidation)return;
+ document.getElementById('validationDetails').innerHTML=`<div class="admin-profile-meta">
+ <div><span>Crop</span><strong>${selectedValidation.crop}</strong></div>
+ <div><span>Market</span><strong>${selectedValidation.market}</strong></div>
+ <div><span>Price per kilogram</span><strong>${AgriAdminUI.peso(selectedValidation.price)}</strong></div>
+ <div><span>Applicable Date</span><strong>${selectedValidation.date}</strong></div>
+ <div><span>Submitted By</span><strong>${selectedValidation.submittedBy||'MAO Personnel'}</strong></div>
+ <div><span>Current Status</span><strong>${selectedValidation.status}</strong></div></div>`;
+ document.getElementById('validationNote').value=selectedValidation.validationNote||'';
+ AgriAdminUI.openModal('validationModal'); window.AgriCaptureFields?.syncAll?.();
+}
+function setStatus(status){
+ if(!selectedValidation)return;
+ const note=document.getElementById('validationNote').value.trim();
+ if(status==='Returned for Correction'&&!note){AgriAdminUI.toast('Add a correction note before returning the record.','error','Validation');return;}
+ let l=AgriAdminStore.getPrices();const p=l.find(x=>x.id===selectedValidation.id);p.status=status;p.validationNote=note;p.validatedBy='MAO Personnel';p.validatedAt='2026-08-30';
+ AgriAdminStore.savePrices(l);AgriAdminStore.log(`Price ${status.toLowerCase()}`,`${p.crop} • ${p.market}`,'fa-circle-check');
+ AgriAdminUI.closeModal('validationModal');renderValidation();AgriAdminUI.toast(`Price record ${status.toLowerCase()}.`,'success','Price Validation');
+}
+document.getElementById('approvePriceBtn').onclick=()=>setStatus('Approved');
+document.getElementById('returnPriceBtn').onclick=()=>setStatus('Returned for Correction');
+[vs,vf,vc].forEach(x=>x.addEventListener(x===vs?'input':'change',renderValidation));renderValidation();
+
+</script></body></html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/>
+<title>User Management</title>
+</head>
+<body class="admin-app">
+<div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main">
+<header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head"><div><p>View and manage farmer accounts without exposing authentication secrets.</p></div></div>
+<div class="admin-note admin-danger-note" style="margin-bottom:10px;"><i class="fa-solid fa-shield-halved"></i> Passwords and password hashes are never visible to administrators.</div>
+<section class="admin-card">
+<div class="admin-toolbar"><div class="admin-search"><i class="fa-solid fa-magnifying-glass"></i><input id="userSearch" placeholder="Search users..."/></div><div class="admin-filter"><select id="userMunicipality"><option value="">All Municipalities</option><option>Teresa</option><option>Tanay</option><option>Antipolo City</option><option>Rodriguez</option><option>Taytay</option></select></div><div class="admin-filter"><select id="userRole"><option value="">All Roles</option><option value="FARMER">Farmer</option><option value="ADMIN">Admin</option></select></div><div class="admin-filter"><select id="userStatus"><option value="">All Statuses</option><option>Active</option><option>Inactive</option></select></div></div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Municipality</th><th>Role</th><th>Status</th><th>Registered</th><th>Actions</th></tr></thead><tbody id="userRows"></tbody></table></div>
+</section>
+<div class="admin-modal-overlay" id="userModal"><div class="admin-modal"><div class="admin-modal-head"><h3>User Details</h3><button class="admin-modal-close" data-close=""><i class="fa-solid fa-xmark"></i></button></div><div id="userDetails"></div><div class="admin-modal-actions"><button class="btn btn-outline" data-close="">Close</button><button class="btn btn-danger" id="toggleUserBtn">Deactivate Account</button></div></div></div>
+</main>
+</div>
+</div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+AgriAdminLayout.init('admin-users.html','User Management','ADMIN');
+
+let selectedUser=null; AgriAdminUI.bindModal('userModal');
+const ur=AgriAdminUI.byId('userRows'),us=AgriAdminUI.byId('userSearch'),um=AgriAdminUI.byId('userMunicipality'),urole=AgriAdminUI.byId('userRole'),ust=AgriAdminUI.byId('userStatus');
+function render(){const q=us.value.toLowerCase(),mu=um.value,r=urole.value,st=ust.value;const list=AgriAdminStore.getUsers().filter(u=>(!q||`${u.name} ${u.email}`.toLowerCase().includes(q))&&(!mu||u.municipality===mu)&&(!r||u.role===r)&&(!st||u.status===st));ur.innerHTML=list.map(u=>`<tr><td><strong>${u.name}</strong></td><td>${u.email}</td><td>${u.municipality}</td><td><span class="admin-badge ${u.role==='ADMIN'?'admin':'farmer'}">${u.role}</span></td><td><span class="admin-badge ${u.status.toLowerCase()}">${u.status}</span></td><td>${u.registered}</td><td><button class="admin-icon-btn" data-view="${u.id}"><i class="fa-solid fa-eye"></i></button></td></tr>`).join('');ur.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));}
+function view(id){selectedUser=AgriAdminStore.getUsers().find(x=>x.id===id);if(!selectedUser)return;AgriAdminUI.byId('userDetails').innerHTML=`<div class="admin-profile-meta"><div><span>Full Name</span><strong>${selectedUser.name}</strong></div><div><span>Email</span><strong>${selectedUser.email}</strong></div><div><span>Municipality</span><strong>${selectedUser.municipality}</strong></div><div><span>Role</span><strong>${selectedUser.role}</strong></div><div><span>Date Registered</span><strong>${selectedUser.registered}</strong></div></div>`;const b=AgriAdminUI.byId('toggleUserBtn');b.style.display=selectedUser.role==='ADMIN'?'none':'inline-flex';b.textContent=selectedUser.status==='Active'?'Deactivate Account':'Activate Account';AgriAdminUI.openModal('userModal');}
+AgriAdminUI.byId('toggleUserBtn').onclick=()=>{if(!selectedUser)return;let l=AgriAdminStore.getUsers();const u=l.find(x=>x.id===selectedUser.id);u.status=u.status==='Active'?'Inactive':'Active';AgriAdminStore.saveUsers(l);AgriAdminStore.log(`User ${u.status.toLowerCase()}`,u.name,'fa-user-check');AgriAdminUI.closeModal('userModal');render();AgriAdminUI.toast(`Account ${u.status.toLowerCase()}.`);};
+[us,um,urole,ust].forEach(el=>el.addEventListener(el===us?'input':'change',render));render();
+
+</script>
+</body>
+</html>

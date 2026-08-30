@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/>
+<title>Admin Profile</title>
+</head>
+<body class="admin-app">
+<div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main">
+<header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head"><div><p>Manage your administrator account information and password.</p></div></div>
+<div class="admin-profile-grid">
+<section class="admin-card admin-profile-card">
+<div class="admin-profile-avatar" id="profileInitials">AU</div><h3 id="profileName">Admin User</h3><p id="profileEmail">admin@agriprice.ph</p>
+<div class="admin-profile-meta"><div><span>Role</span><strong>Administrator</strong></div><div><span>Account Status</span><strong>Active</strong></div></div>
+</section>
+<section class="admin-card">
+<div class="admin-card-head"><h3>Profile Information</h3><span>Administrator account</span></div>
+<form id="profileForm"><div class="admin-form-grid"><div class="form-group"><label>First Name</label><input id="adminFirst"/></div><div class="form-group"><label>Last Name</label><input id="adminLast"/></div><div class="form-group full"><label>Email</label><input id="adminEmail" type="email"/></div></div><div class="admin-modal-actions"><button class="btn btn-primary">Save Profile</button></div></form>
+<div style="height:1px;background:var(--mist);margin:10px 0 12px;"></div>
+<div class="admin-card-head"><h3>Change Password</h3><span>Account security</span></div>
+<form id="passwordForm"><div class="admin-form-grid"><div class="form-group"><label>Current Password</label><input id="adminCurrentPass" type="password" value="admin1234"/></div><div class="form-group"><label>New Password</label><input id="adminNewPass" placeholder="Minimum 8 characters" type="password"/></div></div><div class="admin-modal-actions"><button class="btn btn-outline">Change Password</button></div></form>
+</section>
+</div>
+</main>
+</div>
+</div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+AgriAdminLayout.init('admin-profile.html','Admin Profile','ADMIN');
+
+function loadProfile(){const p=AgriAdminStore.getProfile();AgriAdminUI.byId('adminFirst').value=p.firstName;AgriAdminUI.byId('adminLast').value=p.lastName;AgriAdminUI.byId('adminEmail').value=p.email;AgriAdminUI.byId('profileName').textContent=`${p.firstName} ${p.lastName}`;AgriAdminUI.byId('profileEmail').textContent=p.email;AgriAdminUI.byId('profileInitials').textContent=`${p.firstName?.[0]||'A'}${p.lastName?.[0]||'U'}`.toUpperCase();window.AgriCaptureFields?.syncAll?.();}
+AgriAdminUI.byId('profileForm').onsubmit=e=>{e.preventDefault();const p={firstName:AgriAdminUI.byId('adminFirst').value.trim(),lastName:AgriAdminUI.byId('adminLast').value.trim(),email:AgriAdminUI.byId('adminEmail').value.trim()};AgriAdminStore.saveProfile(p);AgriAdminStore.log('Admin profile updated',p.email,'fa-user-gear');loadProfile();AgriAdminUI.toast('Profile updated.');};
+AgriAdminUI.byId('passwordForm').onsubmit=e=>{e.preventDefault();const np=AgriAdminUI.byId('adminNewPass').value;if(np.length<8){AgriAdminUI.toast('New password must be at least 8 characters.','error','Password');return;}AgriAdminUI.byId('adminNewPass').value='';AgriAdminUI.toast('Password changed for prototype.');window.AgriCaptureFields?.syncAll?.();};
+loadProfile();
+
+</script>
+</body>
+</html>

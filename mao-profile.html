@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/><title>MAO Profile</title></head>
+<body class="admin-app"><div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main"><header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head"><div><p>Manage Municipal Agriculture Office personnel account information.</p></div></div>
+<div class="admin-profile-grid">
+<section class="admin-card admin-profile-card">
+<div class="admin-profile-avatar" id="maoProfileInitials">KO</div><h3 id="maoProfileName">King Obrero</h3><p id="maoProfileEmail">king.obrero@mao-rizal.ph</p>
+<div class="admin-profile-meta"><div><span>Role</span><strong>MAO Personnel</strong></div><div><span>Account Status</span><strong>Active</strong></div></div>
+</section>
+<section class="admin-card">
+<div class="admin-card-head"><h3>Profile Information</h3><span>MAO account</span></div>
+<form id="maoProfileForm"><div class="admin-form-grid">
+<div class="form-group"><label>First Name</label><input id="maoFirst"/></div>
+<div class="form-group"><label>Last Name</label><input id="maoLast"/></div>
+<div class="form-group full"><label>Email</label><input id="maoProfileEmailInput" type="email"/></div>
+<div class="form-group"><label>Position</label><input id="maoPosition"/></div>
+<div class="form-group"><label>Municipality</label><input id="maoMunicipality" readonly=""/></div>
+<div class="form-group full"><label>Municipal Agriculture Office</label><input id="maoOffice"/></div>
+</div><div class="admin-modal-actions"><button class="btn btn-primary">Save Profile</button></div></form>
+<div style="height:1px;background:var(--mist);margin:10px 0 12px;"></div>
+<div class="admin-card-head"><h3>Change Password</h3><span>Account security</span></div>
+<form id="maoPasswordForm"><div class="admin-form-grid"><div class="form-group"><label>Current Password</label><input type="password" value="mao12345"/></div><div class="form-group"><label>New Password</label><input id="maoNewPassword" placeholder="Minimum 8 characters" type="password"/></div></div><div class="admin-modal-actions"><button class="btn btn-outline">Change Password</button></div></form>
+</section>
+</div>
+</main></div></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+const PAGE_ROLE=AgriAdminLayout.init('mao-profile.html','MAO Profile','MAO');
+
+function loadMaoProfile(){const p=AgriAdminStore.getMaoProfile();document.getElementById('maoFirst').value=p.firstName||'';document.getElementById('maoLast').value=p.lastName||'';document.getElementById('maoProfileEmailInput').value=p.email||'';document.getElementById('maoPosition').value=p.position||'';document.getElementById('maoMunicipality').value=p.municipality||'';document.getElementById('maoOffice').value=p.office||'';document.getElementById('maoProfileName').textContent=`${p.firstName} ${p.lastName}`;document.getElementById('maoProfileEmail').textContent=p.email;document.getElementById('maoProfileInitials').textContent=`${p.firstName?.[0]||'M'}${p.lastName?.[0]||'P'}`.toUpperCase();window.AgriCaptureFields?.syncAll?.();}
+document.getElementById('maoProfileForm').onsubmit=e=>{e.preventDefault();const p={firstName:document.getElementById('maoFirst').value.trim(),lastName:document.getElementById('maoLast').value.trim(),email:document.getElementById('maoProfileEmailInput').value.trim(),position:document.getElementById('maoPosition').value.trim(),municipality:document.getElementById('maoMunicipality').value.trim(),office:document.getElementById('maoOffice').value.trim()};AgriAdminStore.saveMaoProfile(p);AgriAdminStore.log('MAO profile updated',p.office,'fa-user-gear');loadMaoProfile();AgriAdminUI.toast('MAO profile updated.');};
+document.getElementById('maoPasswordForm').onsubmit=e=>{e.preventDefault();const n=document.getElementById('maoNewPassword');if(n.value.length<8){AgriAdminUI.toast('New password must be at least 8 characters.','error','Password');return;}n.value='';AgriAdminUI.toast('Password changed for prototype.');window.AgriCaptureFields?.syncAll?.();};loadMaoProfile();
+
+</script></body></html>

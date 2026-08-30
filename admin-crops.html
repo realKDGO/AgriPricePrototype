@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/>
+<title>Crop Management</title>
+</head>
+<body class="admin-app">
+<div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main">
+<header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head">
+<div><p>Maintain the crop reference data available across AgriPrice.</p></div>
+<div class="admin-actions"><button class="btn btn-primary" id="addCropBtn"><i class="fa-solid fa-plus"></i> Add Crop</button></div>
+</div>
+<div class="management-role-note admin-note"><i class="fa-solid fa-building-wheat"></i> You are using this shared agricultural management page as MAO Personnel.</div>
+<section class="admin-card">
+<div class="admin-toolbar">
+<div class="admin-search"><i class="fa-solid fa-magnifying-glass"></i><input id="cropSearch" placeholder="Search crops..."/></div>
+<div class="admin-filter"><select id="cropStatus"><option value="">All Statuses</option><option>Active</option><option>Inactive</option></select></div>
+</div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Crop</th><th>Category</th><th>Unit</th><th>Status</th><th>Date Added</th><th>Actions</th></tr></thead><tbody id="cropRows"></tbody></table></div>
+</section>
+<div class="admin-modal-overlay" id="cropModal">
+<div class="admin-modal">
+<div class="admin-modal-head"><h3 id="cropModalTitle">Add Crop</h3><button class="admin-modal-close" data-close=""><i class="fa-solid fa-xmark"></i></button></div>
+<form id="cropForm"><input id="editCropId" type="hidden"/>
+<div class="admin-form-grid">
+<div class="form-group"><label>Crop Name</label><input id="cropName" required=""/></div>
+<div class="form-group"><label>Category</label><select id="cropCategory"><option>Vegetable</option><option>Grain</option><option>Fruit</option><option>Spice</option></select></div>
+<div class="form-group"><label>Unit</label><select id="cropUnit"><option>kg</option><option>sack</option><option>piece</option></select></div>
+<div class="form-group"><label>Status</label><select id="cropEditStatus"><option>Active</option><option>Inactive</option></select></div>
+<div class="form-group full"><label>Description</label><textarea id="cropDescription"></textarea></div>
+</div>
+<div class="admin-note" style="margin-top:10px;">Deactivation is used instead of permanent deletion when historical price records already reference a crop.</div>
+<div class="admin-modal-actions"><button class="btn btn-outline" data-close="" type="button">Cancel</button><button class="btn btn-primary">Save Crop</button></div>
+</form>
+</div>
+</div>
+</main>
+</div>
+</div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+AgriAdminLayout.init('admin-crops.html','Crop Management');
+
+const cr=AgriAdminUI.byId('cropRows'), cs=AgriAdminUI.byId('cropSearch'), sf=AgriAdminUI.byId('cropStatus'); AgriAdminUI.bindModal('cropModal');
+function render(){
+ const q=cs.value.toLowerCase(), st=sf.value;
+ const rows=AgriAdminStore.getCrops().filter(c=>(!q||`${c.name} ${c.category}`.toLowerCase().includes(q))&&(!st||c.status===st));
+ cr.innerHTML=rows.map(c=>`<tr><td><strong>${c.name}</strong></td><td>${c.category}</td><td>${c.unit}</td><td><span class="admin-badge ${c.status.toLowerCase()}">${c.status}</span></td><td>${c.dateAdded}</td><td><div class="actions"><button class="admin-icon-btn" data-edit="${c.id}"><i class="fa-solid fa-pen"></i></button><button class="admin-icon-btn" data-toggle="${c.id}" title="${c.status==='Active'?'Deactivate':'Activate'}"><i class="fa-solid ${c.status==='Active'?'fa-pause':'fa-play'}"></i></button></div></td></tr>`).join('');
+ cr.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>edit(b.dataset.edit)); cr.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>toggle(b.dataset.toggle));
+}
+function add(){ AgriAdminUI.byId('cropModalTitle').textContent='Add Crop'; AgriAdminUI.byId('editCropId').value=''; AgriAdminUI.byId('cropName').value=''; AgriAdminUI.byId('cropDescription').value=''; AgriAdminUI.openModal('cropModal');}
+function edit(id){const c=AgriAdminStore.getCrops().find(x=>x.id===id); if(!c)return; AgriAdminUI.byId('cropModalTitle').textContent='Edit Crop'; AgriAdminUI.byId('editCropId').value=id; AgriAdminUI.byId('cropName').value=c.name; AgriAdminUI.byId('cropCategory').value=c.category; AgriAdminUI.byId('cropUnit').value=c.unit; AgriAdminUI.byId('cropEditStatus').value=c.status; AgriAdminUI.byId('cropDescription').value=c.description||''; AgriAdminUI.openModal('cropModal');}
+function toggle(id){let list=AgriAdminStore.getCrops(); const c=list.find(x=>x.id===id); c.status=c.status==='Active'?'Inactive':'Active'; AgriAdminStore.saveCrops(list); AgriAdminStore.log(`Crop ${c.status.toLowerCase()}`,c.name,'fa-seedling'); render();}
+AgriAdminUI.byId('addCropBtn').onclick=add; cs.oninput=render; sf.onchange=render;
+AgriAdminUI.byId('cropForm').onsubmit=e=>{e.preventDefault(); const id=AgriAdminUI.byId('editCropId').value; let list=AgriAdminStore.getCrops(); const name=AgriAdminUI.byId('cropName').value.trim(); const rec={id:id||name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name,category:AgriAdminUI.byId('cropCategory').value,unit:AgriAdminUI.byId('cropUnit').value,status:AgriAdminUI.byId('cropEditStatus').value,description:AgriAdminUI.byId('cropDescription').value.trim(),dateAdded:id?(list.find(x=>x.id===id)?.dateAdded||'2026-08-24'):'2026-08-24'}; list=id?list.map(x=>x.id===id?rec:x):[...list,rec]; AgriAdminStore.saveCrops(list); AgriAdminStore.log(id?'Crop updated':'Crop added',rec.name,'fa-seedling'); AgriAdminUI.closeModal('cropModal'); render(); AgriAdminUI.toast('Crop saved.');};
+render(); if(new URLSearchParams(location.search).get('action')==='add')setTimeout(add,120);
+
+</script>
+</body>
+</html>

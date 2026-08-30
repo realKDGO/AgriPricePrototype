@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/><title>MAO Personnel Accounts</title></head>
+<body class="admin-app"><div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main"><header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head"><div><p>Create and manage Municipal Agriculture Office personnel access.</p></div><div class="admin-actions"><button class="btn btn-primary" id="addMaoAccount"><i class="fa-solid fa-plus"></i> Add MAO Account</button></div></div>
+<section class="admin-card">
+<div class="admin-toolbar"><div class="admin-search"><i class="fa-solid fa-magnifying-glass"></i><input id="maoAccountSearch" placeholder="Search MAO personnel..."/></div><div class="admin-filter"><select id="maoAccountStatus"><option value="">All Statuses</option><option>Active</option><option>Inactive</option></select></div></div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Office</th><th>Position</th><th>Status</th><th>Registered</th><th>Actions</th></tr></thead><tbody id="maoAccountRows"></tbody></table></div>
+</section>
+<div class="admin-modal-overlay" id="maoAccountModal"><div class="admin-modal"><div class="admin-modal-head"><h3 id="maoAccountTitle">Add MAO Account</h3><button class="admin-modal-close" data-close=""><i class="fa-solid fa-xmark"></i></button></div><form id="maoAccountForm"><input id="maoAccountId" type="hidden"/><div class="admin-form-grid"><div class="form-group"><label>Full Name</label><input id="maoAccountName" required=""/></div><div class="form-group"><label>Email</label><input id="maoAccountEmail" required="" type="email"/></div><div class="form-group"><label>Office</label><input id="maoAccountOffice" placeholder="MAO - Municipality" required=""/></div><div class="form-group"><label>Position</label><input id="maoAccountPosition" required=""/></div><div class="form-group"><label>Status</label><select id="maoAccountEditStatus"><option>Active</option><option>Inactive</option></select></div></div><div class="admin-modal-actions"><button class="btn btn-outline" data-close="" type="button">Cancel</button><button class="btn btn-primary">Save Account</button></div></form></div></div>
+</main></div></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+const PAGE_ROLE=AgriAdminLayout.init('admin-mao-accounts.html','MAO Personnel Accounts','ADMIN');
+
+if(PAGE_ROLE!=='ADMIN')location.href='mao-dashboard.html';
+AgriAdminUI.bindModal('maoAccountModal');let current=null;
+const rows=document.getElementById('maoAccountRows'),search=document.getElementById('maoAccountSearch'),status=document.getElementById('maoAccountStatus');
+function render(){const q=search.value.toLowerCase(),st=status.value;const list=AgriAdminStore.getMaoAccounts().filter(x=>(!q||`${x.name} ${x.email} ${x.office}`.toLowerCase().includes(q))&&(!st||x.status===st));rows.innerHTML=list.map(x=>`<tr><td><strong>${x.name}</strong></td><td>${x.email}</td><td>${x.office}</td><td>${x.position}</td><td><span class="admin-badge ${x.status.toLowerCase()}">${x.status}</span></td><td>${x.registered}</td><td><div class="actions"><button class="admin-icon-btn" data-edit="${x.id}"><i class="fa-solid fa-pen"></i></button><button class="admin-icon-btn" data-toggle="${x.id}"><i class="fa-solid ${x.status==='Active'?'fa-pause':'fa-play'}"></i></button></div></td></tr>`).join('');rows.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>edit(b.dataset.edit));rows.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>toggle(b.dataset.toggle));}
+function openAdd(){current=null;document.getElementById('maoAccountTitle').textContent='Add MAO Account';document.getElementById('maoAccountId').value='';['maoAccountName','maoAccountEmail','maoAccountOffice','maoAccountPosition'].forEach(id=>document.getElementById(id).value='');AgriAdminUI.openModal('maoAccountModal');}
+function edit(id){current=AgriAdminStore.getMaoAccounts().find(x=>x.id===id);if(!current)return;document.getElementById('maoAccountTitle').textContent='Edit MAO Account';document.getElementById('maoAccountId').value=id;document.getElementById('maoAccountName').value=current.name;document.getElementById('maoAccountEmail').value=current.email;document.getElementById('maoAccountOffice').value=current.office;document.getElementById('maoAccountPosition').value=current.position;document.getElementById('maoAccountEditStatus').value=current.status;AgriAdminUI.openModal('maoAccountModal');}
+function toggle(id){let l=AgriAdminStore.getMaoAccounts();const x=l.find(a=>a.id===id);x.status=x.status==='Active'?'Inactive':'Active';AgriAdminStore.saveMaoAccounts(l);render();}
+document.getElementById('addMaoAccount').onclick=openAdd;search.oninput=render;status.onchange=render;
+document.getElementById('maoAccountForm').onsubmit=e=>{e.preventDefault();const id=document.getElementById('maoAccountId').value;let l=AgriAdminStore.getMaoAccounts();const rec={id:id||`mao${Date.now()}`,name:document.getElementById('maoAccountName').value.trim(),email:document.getElementById('maoAccountEmail').value.trim(),office:document.getElementById('maoAccountOffice').value.trim(),position:document.getElementById('maoAccountPosition').value.trim(),status:document.getElementById('maoAccountEditStatus').value,registered:id?(l.find(x=>x.id===id)?.registered||'2026-08-30'):'2026-08-30'};l=id?l.map(x=>x.id===id?rec:x):[...l,rec];AgriAdminStore.saveMaoAccounts(l);AgriAdminStore.log(id?'MAO account updated':'MAO account created',rec.name,'fa-user-tie');AgriAdminUI.closeModal('maoAccountModal');render();AgriAdminUI.toast('MAO account saved.');};render();
+
+</script></body></html>

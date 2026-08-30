@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/><title>Roles &amp; Permissions</title></head>
+<body class="admin-app"><div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main"><header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head"><div><p>Prototype overview of role-based access across AgriPrice.</p></div></div>
+<section class="admin-card">
+<div class="admin-card-head"><h3>Permission Matrix</h3><span>Prototype access model</span></div>
+<div class="admin-table-wrap"><table class="role-matrix"><thead><tr><th>Feature</th><th>Farmer</th><th>MAO</th><th>Admin</th></tr></thead><tbody>
+<tr><td>View current prices</td><td class="role-check">Yes</td><td class="role-check">Yes</td><td class="role-check">Yes</td></tr>
+<tr><td>Crop / Market Management</td><td class="role-no">No</td><td class="role-check">Yes</td><td class="role-check">Yes</td></tr>
+<tr><td>Price Management</td><td class="role-no">No</td><td class="role-check">Yes</td><td class="role-check">Yes</td></tr>
+<tr><td>Price Validation</td><td class="role-no">No</td><td class="role-check">Yes</td><td class="role-no">No</td></tr>
+<tr><td>Historical / Forecast Monitoring</td><td class="role-check">View</td><td class="role-check">Monitor</td><td class="role-check">Monitor</td></tr>
+<tr><td>Reports &amp; Analytics</td><td class="role-check">Limited</td><td class="role-check">Yes</td><td class="role-check">Yes</td></tr>
+<tr><td>User Management</td><td class="role-no">No</td><td class="role-no">No</td><td class="role-check">Yes</td></tr>
+<tr><td>MAO Account Management</td><td class="role-no">No</td><td class="role-no">No</td><td class="role-check">Yes</td></tr>
+</tbody></table></div>
+<div class="admin-note" style="margin-top:12px;"><i class="fa-solid fa-circle-info"></i> This is a frontend prototype permission model. Backend authorization must enforce these permissions when connected.</div>
+</section>
+</main></div></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+const PAGE_ROLE=AgriAdminLayout.init('admin-roles.html','Roles & Permissions','ADMIN');
+if(PAGE_ROLE!=='ADMIN')location.href='mao-dashboard.html';
+</script></body></html>

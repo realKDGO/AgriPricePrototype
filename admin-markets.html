@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/>
+<title>Market Management</title>
+</head>
+<body class="admin-app">
+<div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main">
+<header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head"><div><p>Manage markets and municipality reference information.</p></div><div class="admin-actions"><button class="btn btn-primary" id="addMarketBtn"><i class="fa-solid fa-plus"></i> Add Market</button></div></div>
+<div class="management-role-note admin-note"><i class="fa-solid fa-building-wheat"></i> You are using this shared agricultural management page as MAO Personnel.</div>
+<section class="admin-card">
+<div class="admin-toolbar">
+<div class="admin-search"><i class="fa-solid fa-magnifying-glass"></i><input id="marketSearch" placeholder="Search markets..."/></div>
+<div class="admin-filter"><select id="municipalityFilter"><option value="">All Municipalities</option><option>Antipolo City</option><option>Cainta</option><option>Binangonan</option><option>Taytay</option><option>Angono</option><option>Rodriguez</option><option>Teresa</option></select></div>
+<div class="admin-filter"><select id="marketStatus"><option value="">All Statuses</option><option>Active</option><option>Inactive</option></select></div>
+</div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Market</th><th>Municipality</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead><tbody id="marketRows"></tbody></table></div>
+</section>
+<div class="admin-modal-overlay" id="marketModal"><div class="admin-modal">
+<div class="admin-modal-head"><h3 id="marketModalTitle">Add Market</h3><button class="admin-modal-close" data-close=""><i class="fa-solid fa-xmark"></i></button></div>
+<form id="marketForm"><input id="editMarketId" type="hidden"/><div class="admin-form-grid">
+<div class="form-group full"><label>Market Name</label><input id="marketName" required=""/></div>
+<div class="form-group"><label>Municipality</label><select id="marketMunicipality"><option>Antipolo City</option><option>Cainta</option><option>Binangonan</option><option>Taytay</option><option>Angono</option><option>Rodriguez</option><option>Teresa</option></select></div>
+<div class="form-group"><label>Status</label><select id="marketEditStatus"><option>Active</option><option>Inactive</option></select></div>
+<div class="form-group full"><label>Location</label><input id="marketLocation" placeholder="Municipality, Rizal"/></div>
+</div><div class="admin-modal-actions"><button class="btn btn-outline" data-close="" type="button">Cancel</button><button class="btn btn-primary">Save Market</button></div></form>
+</div></div>
+</main>
+</div>
+</div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+AgriAdminLayout.init('admin-markets.html','Market Management');
+
+const mr=AgriAdminUI.byId('marketRows'), ms=AgriAdminUI.byId('marketSearch'), muf=AgriAdminUI.byId('municipalityFilter'), mst=AgriAdminUI.byId('marketStatus'); AgriAdminUI.bindModal('marketModal');
+function render(){const q=ms.value.toLowerCase(),mu=muf.value,st=mst.value; const rows=AgriAdminStore.getMarkets().filter(m=>(!q||`${m.name} ${m.municipality}`.toLowerCase().includes(q))&&(!mu||m.municipality===mu)&&(!st||m.status===st)); mr.innerHTML=rows.map(m=>`<tr><td><strong>${m.name}</strong></td><td>${m.municipality}</td><td>${m.location}</td><td><span class="admin-badge ${m.status.toLowerCase()}">${m.status}</span></td><td><div class="actions"><button class="admin-icon-btn" data-edit="${m.id}"><i class="fa-solid fa-pen"></i></button><button class="admin-icon-btn" data-toggle="${m.id}"><i class="fa-solid ${m.status==='Active'?'fa-pause':'fa-play'}"></i></button></div></td></tr>`).join(''); mr.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>edit(b.dataset.edit)); mr.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>toggle(b.dataset.toggle));}
+function add(){AgriAdminUI.byId('marketModalTitle').textContent='Add Market'; AgriAdminUI.byId('editMarketId').value=''; AgriAdminUI.byId('marketName').value=''; AgriAdminUI.byId('marketLocation').value=''; AgriAdminUI.openModal('marketModal');}
+function edit(id){const m=AgriAdminStore.getMarkets().find(x=>x.id===id);if(!m)return; AgriAdminUI.byId('marketModalTitle').textContent='Edit Market';AgriAdminUI.byId('editMarketId').value=id;AgriAdminUI.byId('marketName').value=m.name;AgriAdminUI.byId('marketMunicipality').value=m.municipality;AgriAdminUI.byId('marketEditStatus').value=m.status;AgriAdminUI.byId('marketLocation').value=m.location;AgriAdminUI.openModal('marketModal');}
+function toggle(id){let l=AgriAdminStore.getMarkets();const m=l.find(x=>x.id===id);m.status=m.status==='Active'?'Inactive':'Active';AgriAdminStore.saveMarkets(l);AgriAdminStore.log(`Market ${m.status.toLowerCase()}`,m.name,'fa-store');render();}
+AgriAdminUI.byId('addMarketBtn').onclick=add; ms.oninput=render;muf.onchange=render;mst.onchange=render;
+AgriAdminUI.byId('marketForm').onsubmit=e=>{e.preventDefault();const id=AgriAdminUI.byId('editMarketId').value;let l=AgriAdminStore.getMarkets();const name=AgriAdminUI.byId('marketName').value.trim(),mu=AgriAdminUI.byId('marketMunicipality').value;const rec={id:id||name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),name,municipality:mu,location:AgriAdminUI.byId('marketLocation').value.trim()||`${mu}, Rizal`,status:AgriAdminUI.byId('marketEditStatus').value};l=id?l.map(x=>x.id===id?rec:x):[...l,rec];AgriAdminStore.saveMarkets(l);AgriAdminStore.log(id?'Market updated':'Market added',rec.name,'fa-store');AgriAdminUI.closeModal('marketModal');render();AgriAdminUI.toast('Market saved.');};
+render(); if(new URLSearchParams(location.search).get('action')==='add')setTimeout(add,120);
+
+</script>
+</body>
+</html>

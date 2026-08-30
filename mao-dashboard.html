@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="images/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link href="css/admin.css" rel="stylesheet"/><title>MAO Dashboard</title></head>
+<body class="admin-app"><div class="admin-shell">
+<aside class="admin-sidebar" id="adminSidebar"></aside>
+<div class="admin-main"><header class="admin-topbar" id="adminTopbar"></header>
+<main class="admin-body">
+<div class="admin-page-head">
+<div><p>Overview of agricultural records and validation activity for the Municipal Agriculture Office.</p></div>
+<div class="admin-actions"><a class="btn btn-primary" href="admin-prices.html?action=add"><i class="fa-solid fa-plus"></i> Add Price Record</a></div>
+</div>
+<div class="admin-stats">
+<div class="admin-stat"><div class="admin-stat-top"><span class="admin-stat-label">Available Crops</span><span class="admin-stat-icon"><i class="fa-solid fa-seedling"></i></span></div><div class="admin-stat-value" id="maoStatCrops">0</div><div class="admin-stat-note">Active crop records</div></div>
+<div class="admin-stat"><div class="admin-stat-top"><span class="admin-stat-label">Markets</span><span class="admin-stat-icon"><i class="fa-solid fa-store"></i></span></div><div class="admin-stat-value" id="maoStatMarkets">0</div><div class="admin-stat-note">Active markets</div></div>
+<div class="admin-stat"><div class="admin-stat-top"><span class="admin-stat-label">Recent Prices</span><span class="admin-stat-icon"><i class="fa-solid fa-tags"></i></span></div><div class="admin-stat-value" id="maoStatPrices">0</div><div class="admin-stat-note">Recent records</div></div>
+<div class="admin-stat"><div class="admin-stat-top"><span class="admin-stat-label">Pending Validation</span><span class="admin-stat-icon"><i class="fa-solid fa-hourglass-half"></i></span></div><div class="admin-stat-value" id="maoStatPending">0</div><div class="admin-stat-note">Requires review</div></div>
+<div class="admin-stat"><div class="admin-stat-top"><span class="admin-stat-label">Updated Today</span><span class="admin-stat-icon"><i class="fa-solid fa-calendar-check"></i></span></div><div class="admin-stat-value" id="maoStatToday">0</div><div class="admin-stat-note">Price updates</div></div>
+</div>
+<div class="mao-dashboard-grid">
+<section class="admin-card">
+<div class="admin-card-head"><h3>Records Requiring Validation</h3><a href="mao-price-validation.html">Open validation</a></div>
+<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Crop</th><th>Market</th><th>Price/kg</th><th>Date</th><th>Status</th></tr></thead><tbody id="maoPendingRows"></tbody></table></div>
+</section>
+<section class="admin-card">
+<div class="admin-card-head"><h3>Quick Access</h3><span>MAO functions</span></div>
+<div class="admin-quick" style="grid-template-columns:1fr 1fr;">
+<a href="admin-crops.html"><i class="fa-solid fa-seedling"></i>Manage Crops</a>
+<a href="admin-markets.html"><i class="fa-solid fa-store"></i>Manage Markets</a>
+<a href="admin-prices.html"><i class="fa-solid fa-tags"></i>Manage Prices</a>
+<a href="mao-price-validation.html"><i class="fa-solid fa-circle-check"></i>Validate Prices</a>
+<a href="admin-forecasts.html"><i class="fa-solid fa-chart-line"></i>View Forecasts</a>
+<a href="admin-reports.html"><i class="fa-solid fa-file-lines"></i>Reports</a>
+</div>
+</section>
+</div>
+<div class="admin-grid-2" style="margin-top:12px;">
+<section class="admin-card"><div class="admin-card-head"><h3>Recent Price Updates</h3><span>Latest records</span></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Crop</th><th>Market</th><th>Price/kg</th><th>Date</th></tr></thead><tbody id="maoRecentRows"></tbody></table></div></section>
+<section class="admin-card"><div class="admin-card-head"><h3>Recent MAO Activity</h3><span>Prototype activity</span></div><div class="admin-activity" id="maoActivity"></div></section>
+</div>
+</main></div></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin-store.js"></script>
+<script src="js/admin-layout.js"></script>
+<script src="js/admin-pages.js"></script>
+<script src="js/custom-select.js"></script>
+<script src="js/capture-fields.js"></script>
+<script>
+const PAGE_ROLE=AgriAdminLayout.init('mao-dashboard.html','MAO Dashboard','MAO');
+
+const crops=AgriAdminStore.getCrops(),markets=AgriAdminStore.getMarkets(),prices=AgriAdminStore.getPrices();
+const pending=prices.filter(p=>p.status==='Pending');
+document.getElementById('maoStatCrops').textContent=crops.filter(c=>c.status==='Active').length;
+document.getElementById('maoStatMarkets').textContent=markets.filter(m=>m.status==='Active').length;
+document.getElementById('maoStatPrices').textContent=Math.min(prices.length,99);
+document.getElementById('maoStatPending').textContent=pending.length;
+document.getElementById('maoStatToday').textContent=prices.filter(p=>p.date==='2026-08-29'||p.date==='2026-08-30').length;
+const badge=p=>p.status==='Pending'?'pending':p.status==='Approved'?'approved':'returned';
+document.getElementById('maoPendingRows').innerHTML=(pending.length?pending:prices.slice(0,3)).slice(0,5).map(p=>`<tr><td>${p.crop}</td><td>${p.market}</td><td>${AgriAdminUI.peso(p.price)}</td><td>${p.date}</td><td><span class="admin-badge ${badge(p)}">${p.status}</span></td></tr>`).join('');
+document.getElementById('maoRecentRows').innerHTML=prices.slice(0,5).map(p=>`<tr><td>${p.crop}</td><td>${p.market}</td><td>${AgriAdminUI.peso(p.price)}</td><td>${p.date}</td></tr>`).join('');
+document.getElementById('maoActivity').innerHTML=AgriAdminStore.getActivity().slice(0,4).map(a=>`<div class="admin-activity-item"><span class="admin-activity-icon"><i class="fa-solid ${a.icon}"></i></span><div><strong>${a.title}</strong><span>${a.detail} • ${a.time}</span></div></div>`).join('');
+
+</script></body></html>
