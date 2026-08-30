@@ -11,24 +11,24 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/responsive.css">
-<link rel="stylesheet" href="css/prototype-1440.css">
+<link rel="stylesheet" href="css/-1440.css">
 </head>
 <body class="app">
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
 
 <div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="main-content">
-    <header class="topbar" id="topbar"></header>
+ <aside class="sidebar" id="sidebar"></aside>
+ <div class="main-content">
+ <header class="topbar" id="topbar"></header>
 
-    <main class="page-body">
-      <div class="page-head">
-        <div><p>Stay on top of the latest price changes, forecasts, and market updates.</p></div>
-      </div>
+ <main class="page-body">
+ <div class="page-head">
+ <div><p>Stay on top of the latest price changes, forecasts, and market updates.</p></div>
+ </div>
 
-      <div class="notifications-list" id="notificationsList"></div>
-    </main>
-  </div>
+ <div class="notifications-list" id="notificationsList"></div>
+ </main>
+ </div>
 </div>
 
 <script src="js/storage.js"></script>
@@ -37,28 +37,28 @@
 <script src="js/data.js"></script>
 <script src="js/layout.js"></script>
 <script>
-  AgriLayout.init('notifications.html', 'Notifications');
+ AgriLayout.init('notifications.html', 'Notifications');
 
-  const list = document.getElementById('notificationsList');
-  const notifications = AgriData.getNotifications();
-  list.innerHTML = notifications.map(item => `
-    <article class="notification-card ${item.unread ? 'unread' : ''}">
-      <div class="notification-icon ${item.tone}">
-        <i class="fa-solid ${item.icon}"></i>
-      </div>
-      <div class="notification-body">
-        <div class="notification-top">
-          <h3>${item.title}</h3>
-          <span class="notification-badge">${item.unread ? 'New' : 'Read'}</span>
-        </div>
-        <p>${item.description}</p>
-        <div class="notification-meta">
-          <span>${item.date}</span>
-          <span>${item.time}</span>
-        </div>
-      </div>
-    </article>
-  `).join('');
+ const list = document.getElementById('notificationsList');
+ const notifications = AgriData.getNotifications();
+ list.innerHTML = notifications.map(item => `
+ <article class="notification-card ${item.unread ? 'unread' : ''}">
+ <div class="notification-icon ${item.tone}">
+ <i class="fa-solid ${item.icon}"></i>
+ </div>
+ <div class="notification-body">
+ <div class="notification-top">
+ <h3>${item.title}</h3>
+ <span class="notification-badge">${item.unread ? 'New' : 'Read'}</span>
+ </div>
+ <p>${item.description}</p>
+ <div class="notification-meta">
+ <span>${item.date}</span>
+ <span>${item.time}</span>
+ </div>
+ </div>
+ </article>
+ `).join('');
 </script>
 <script src="js/custom-select.js"></script>
 <script src="js/capture-fields.js"></script>

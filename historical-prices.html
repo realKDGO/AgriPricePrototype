@@ -11,43 +11,43 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/responsive.css">
-<link rel="stylesheet" href="css/prototype-1440.css">
+<link rel="stylesheet" href="css/-1440.css">
 </head>
 <body class="app">
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
 
 <div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="main-content">
-    <header class="topbar" id="topbar"></header>
+ <aside class="sidebar" id="sidebar"></aside>
+ <div class="main-content">
+ <header class="topbar" id="topbar"></header>
 
-    <main class="page-body">
-      <div class="page-head">
-        <div><p>Browse past crop prices across Rizal Province markets.</p></div>
-      </div>
+ <main class="page-body">
+ <div class="page-head">
+ <div><p>Browse past crop prices across Rizal Province markets.</p></div>
+ </div>
 
-      <div class="card card-pad">
-        <div class="table-toolbar">
-          <div class="search-box">
-            <span class="s-ic"><i class="fa-solid fa-magnifying-glass"></i></span>
-            <input type="text" id="searchInput" placeholder="Search crop, market, or date…">
-          </div>
-        </div>
+ <div class="card card-pad">
+ <div class="table-toolbar">
+ <div class="search-box">
+ <span class="s-ic"><i class="fa-solid fa-magnifying-glass"></i></span>
+ <input type="text" id="searchInput" placeholder="Search crop, market, or date…">
+ </div>
+ </div>
 
-        <table class="data-table">
-          <thead><tr><th>Date</th><th>Crop</th><th>Market</th><th>Price / kg</th></tr></thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-        <div class="card-list-mobile" id="mobileList"></div>
-        <div class="empty-state" id="emptyState" style="display:none;">
-          <div class="es-ic"><i class="fa-solid fa-clock-rotate-left"></i></div>
-          <p style="margin:0;">No historical records match your search.</p>
-        </div>
+ <table class="data-table">
+ <thead><tr><th>Date</th><th>Crop</th><th>Market</th><th>Price / kg</th></tr></thead>
+ <tbody id="tableBody"></tbody>
+ </table>
+ <div class="card-list-mobile" id="mobileList"></div>
+ <div class="empty-state" id="emptyState" style="display:none;">
+ <div class="es-ic"><i class="fa-solid fa-clock-rotate-left"></i></div>
+ <p style="margin:0;">No historical records match your search.</p>
+ </div>
 
-        <div class="pagination" id="pagination"></div>
-      </div>
-    </main>
-  </div>
+ <div class="pagination" id="pagination"></div>
+ </div>
+ </main>
+ </div>
 </div>
 
 <script src="js/storage.js"></script>
@@ -56,80 +56,80 @@
 <script src="js/data.js"></script>
 <script src="js/layout.js"></script>
 <script>
-  AgriLayout.init('historical-prices.html', 'Historical Prices');
+ AgriLayout.init('historical-prices.html', 'Historical Prices');
 
-  const PAGE_SIZE = 10;
-  let currentPage = 1;
-  const allRows = [...AgriData.HISTORICAL_PRICES].sort((a,b) => new Date(b.date) - new Date(a.date));
-  function cropImage(cropName){ return AgriData.getCropImage(cropName); }
+ const PAGE_SIZE = 10;
+ let currentPage = 1;
+ const allRows = [...AgriData.HISTORICAL_PRICES].sort((a,b) => new Date(b.date) - new Date(a.date));
+ function cropImage(cropName){ return AgriData.getCropImage(cropName); }
 
-  function getFiltered(){
-    const q = document.getElementById('searchInput').value.trim().toLowerCase();
-    if(!q) return allRows;
-    return allRows.filter(r =>
-      r.crop.toLowerCase().includes(q) || r.market.toLowerCase().includes(q) || r.date.includes(q)
-    );
-  }
+ function getFiltered(){
+ const q = document.getElementById('searchInput').value.trim().toLowerCase();
+ if(!q) return allRows;
+ return allRows.filter(r =>
+ r.crop.toLowerCase().includes(q) || r.market.toLowerCase().includes(q) || r.date.includes(q)
+ );
+ }
 
-  function render(){
-    const filtered = getFiltered();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-    currentPage = Math.min(currentPage, totalPages);
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const pageRows = filtered.slice(start, start + PAGE_SIZE);
+ function render(){
+ const filtered = getFiltered();
+ const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+ currentPage = Math.min(currentPage, totalPages);
+ const start = (currentPage - 1) * PAGE_SIZE;
+ const pageRows = filtered.slice(start, start + PAGE_SIZE);
 
-    const tbody = document.getElementById('tableBody');
-    const mobileList = document.getElementById('mobileList');
-    const emptyState = document.getElementById('emptyState');
-    tbody.innerHTML = ''; mobileList.innerHTML = '';
-    emptyState.style.display = filtered.length ? 'none' : 'block';
+ const tbody = document.getElementById('tableBody');
+ const mobileList = document.getElementById('mobileList');
+ const emptyState = document.getElementById('emptyState');
+ tbody.innerHTML = ''; mobileList.innerHTML = '';
+ emptyState.style.display = filtered.length ? 'none' : 'block';
 
-    pageRows.forEach(r => {
-      tbody.insertAdjacentHTML('beforeend', `
-        <tr>
-          <td>${AgriUtils.formatDate(r.date)}</td>
-          <td><div class="cell-crop"><span class="crop-icon-badge"><img src="${cropImage(r.crop)}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</div></td>
-          <td>${r.market}</td>
-          <td class="price-mono">${AgriUtils.pesoRound(r.price)}</td>
-        </tr>
-      `);
-      mobileList.insertAdjacentHTML('beforeend', `
-        <div class="mobile-row-card">
-          <div class="mrc-top">
-            <div class="cell-crop"><span class="crop-icon-badge"><img src="${cropImage(r.crop)}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</div>
-            <span class="price-mono">${AgriUtils.pesoRound(r.price)}</span>
-          </div>
-          <div class="mrc-grid">
-            <div>Date<strong>${AgriUtils.formatDate(r.date)}</strong></div>
-            <div>Market<strong>${r.market}</strong></div>
-          </div>
-        </div>
-      `);
-    });
+ pageRows.forEach(r => {
+ tbody.insertAdjacentHTML('beforeend', `
+ <tr>
+ <td>${AgriUtils.formatDate(r.date)}</td>
+ <td><div class="cell-crop"><span class="crop-icon-badge"><img src="${cropImage(r.crop)}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</div></td>
+ <td>${r.market}</td>
+ <td class="price-mono">${AgriUtils.pesoRound(r.price)}</td>
+ </tr>
+ `);
+ mobileList.insertAdjacentHTML('beforeend', `
+ <div class="mobile-row-card">
+ <div class="mrc-top">
+ <div class="cell-crop"><span class="crop-icon-badge"><img src="${cropImage(r.crop)}" alt="${r.crop} crop image" onerror="this.onerror=null;this.src='images/logo.png';"></span> ${r.crop}</div>
+ <span class="price-mono">${AgriUtils.pesoRound(r.price)}</span>
+ </div>
+ <div class="mrc-grid">
+ <div>Date<strong>${AgriUtils.formatDate(r.date)}</strong></div>
+ <div>Market<strong>${r.market}</strong></div>
+ </div>
+ </div>
+ `);
+ });
 
-    renderPagination(totalPages);
-  }
+ renderPagination(totalPages);
+ }
 
-  function renderPagination(totalPages){
-    const pag = document.getElementById('pagination');
-    let html = `<button ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">‹</button>`;
-    for(let i = 1; i <= totalPages; i++){
-      if(totalPages > 7 && Math.abs(i - currentPage) > 2 && i !== 1 && i !== totalPages){
-        if(i === 2 || i === totalPages - 1) html += `<span style="padding:0 4px; color:var(--ink-faint);">…</span>`;
-        continue;
-      }
-      html += `<button class="${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-    }
-    html += `<button ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">›</button>`;
-    pag.innerHTML = html;
-    pag.querySelectorAll('button[data-page]').forEach(btn => {
-      btn.addEventListener('click', () => { currentPage = Number(btn.dataset.page); render(); });
-    });
-  }
+ function renderPagination(totalPages){
+ const pag = document.getElementById('pagination');
+ let html = `<button ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">‹</button>`;
+ for(let i = 1; i <= totalPages; i++){
+ if(totalPages > 7 && Math.abs(i - currentPage) > 2 && i !== 1 && i !== totalPages){
+ if(i === 2 || i === totalPages - 1) html += `<span style="padding:0 4px; color:var(--ink-faint);">…</span>`;
+ continue;
+ }
+ html += `<button class="${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+ }
+ html += `<button ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">›</button>`;
+ pag.innerHTML = html;
+ pag.querySelectorAll('button[data-page]').forEach(btn => {
+ btn.addEventListener('click', () => { currentPage = Number(btn.dataset.page); render(); });
+ });
+ }
 
-  document.getElementById('searchInput').addEventListener('input', AgriUtils.debounce(() => { currentPage = 1; render(); }, 200));
+ document.getElementById('searchInput').addEventListener('input', AgriUtils.debounce(() => { currentPage = 1; render(); }, 200));
 
-  render();
+ render();
 </script>
 <script src="js/custom-select.js"></script>
 <script src="js/capture-fields.js"></script>

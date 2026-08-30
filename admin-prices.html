@@ -68,26 +68,26 @@ AgriAdminUI.fillSelect(AgriAdminUI.byId('priceCrop'),AgriAdminStore.getCrops());
 AgriAdminUI.fillSelect(AgriAdminUI.byId('priceMarket'),AgriAdminStore.getMarkets());
 AgriAdminUI.bindModal('priceModal');
 function renderPrices(){
-  const q=search.value.toLowerCase(), crop=cf.value, market=mf.value;
-  const rows=AgriAdminStore.getPrices().filter(p=>(!q||`${p.crop} ${p.market}`.toLowerCase().includes(q))&&(!crop||p.cropId===crop)&&(!market||p.marketId===market));
-  priceRows.innerHTML=rows.slice(0,12).map(p=>`<tr>
-    <td>${p.crop}</td><td>${p.market}</td><td class="price-mono">${AgriAdminUI.peso(p.price)}</td><td>${p.date}</td>
-    <td><span class="admin-badge ${p.status==='Pending'?'pending':p.status==='Approved'?'approved':p.status==='Returned for Correction'?'returned':p.status==='Corrected'?'corrected':'active'}">${p.status}</span></td>
-    <td><div class="actions"><button class="admin-icon-btn" data-edit="${p.id}" title="Edit"><i class="fa-solid fa-pen"></i></button></div></td>
-  </tr>`).join('');
-  priceRows.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
+ const q=search.value.toLowerCase(), crop=cf.value, market=mf.value;
+ const rows=AgriAdminStore.getPrices().filter(p=>(!q||`${p.crop} ${p.market}`.toLowerCase().includes(q))&&(!crop||p.cropId===crop)&&(!market||p.marketId===market));
+ priceRows.innerHTML=rows.slice(0,12).map(p=>`<tr>
+ <td>${p.crop}</td><td>${p.market}</td><td class="price-mono">${AgriAdminUI.peso(p.price)}</td><td>${p.date}</td>
+ <td><span class="admin-badge ${p.status==='Pending'?'pending':p.status==='Approved'?'approved':p.status==='Returned for Correction'?'returned':p.status==='Corrected'?'corrected':'active'}">${p.status}</span></td>
+ <td><div class="actions"><button class="admin-icon-btn" data-edit="${p.id}" title="Edit"><i class="fa-solid fa-pen"></i></button></div></td>
+ </tr>`).join('');
+ priceRows.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
 }
 function openAdd(){
-  AgriAdminUI.byId('priceModalTitle').textContent='Add Price Record'; AgriAdminUI.byId('editPriceId').value='';
-  AgriAdminUI.byId('priceValue').value='49'; AgriAdminUI.byId('priceDate').value='2026-08-24';
-  AgriAdminUI.openModal('priceModal'); window.AgriCaptureFields?.syncAll?.();
+ AgriAdminUI.byId('priceModalTitle').textContent='Add Price Record'; AgriAdminUI.byId('editPriceId').value='';
+ AgriAdminUI.byId('priceValue').value='49'; AgriAdminUI.byId('priceDate').value='2026-08-24';
+ AgriAdminUI.openModal('priceModal'); window.AgriCaptureFields?.syncAll?.();
 }
 function openEdit(id){
-  const p=AgriAdminStore.getPrices().find(x=>x.id===id); if(!p)return;
-  AgriAdminUI.byId('priceModalTitle').textContent='Edit Price Record'; AgriAdminUI.byId('editPriceId').value=p.id;
-  AgriAdminUI.byId('priceCrop').value=p.cropId; AgriAdminUI.byId('priceMarket').value=p.marketId;
-  AgriAdminUI.byId('priceValue').value=p.price; AgriAdminUI.byId('priceDate').value=p.date;
-  AgriAdminUI.openModal('priceModal'); document.getElementById('priceCrop').dispatchEvent(new Event('change')); document.getElementById('priceMarket').dispatchEvent(new Event('change'));
+ const p=AgriAdminStore.getPrices().find(x=>x.id===id); if(!p)return;
+ AgriAdminUI.byId('priceModalTitle').textContent='Edit Price Record'; AgriAdminUI.byId('editPriceId').value=p.id;
+ AgriAdminUI.byId('priceCrop').value=p.cropId; AgriAdminUI.byId('priceMarket').value=p.marketId;
+ AgriAdminUI.byId('priceValue').value=p.price; AgriAdminUI.byId('priceDate').value=p.date;
+ AgriAdminUI.openModal('priceModal'); document.getElementById('priceCrop').dispatchEvent(new Event('change')); document.getElementById('priceMarket').dispatchEvent(new Event('change'));
 }
 AgriAdminUI.byId('addPriceBtn').onclick=openAdd;
 [search,cf,mf].forEach(el=>el.addEventListener(el===search?'input':'change',renderPrices));

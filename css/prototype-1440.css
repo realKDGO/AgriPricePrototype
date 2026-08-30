@@ -1,160 +1,160 @@
-/* AgriPrice desktop prototype target: 1440 x 1024.
-   This file is loaded after responsive.css on authenticated screens only. */
+/* AgriPrice desktop target: 1440 x 1024.
+ This file is loaded after responsive.css on authenticated screens only. */
 @media (min-width: 1100px) {
-  html, body.app { width:100%; height:100%; min-height:100%; overflow:hidden; }
-  body.app { font-size:14px; }
-  .app-shell { width:100%; height:100vh; min-height:0; overflow:hidden; display:flex; }
+ html, body.app { width:100%; height:100%; min-height:100%; overflow:hidden; }
+ body.app { font-size:14px; }
+ .app-shell { width:100%; height:100vh; min-height:0; overflow:hidden; display:flex; }
 
-  /* Keep the navigation in normal flex flow for reliable Figma Capture. */
-  .sidebar {
-    position:relative !important; top:auto !important; left:auto !important;
-    width:230px; height:100vh; min-height:0; flex:0 0 230px;
-    padding:18px 14px; overflow:hidden;
-  }
-  .sidebar-brand { padding:0 6px 12px; font-size:1.02rem; }
-  .sidebar-section-label { padding:9px 9px 4px; font-size:.58rem; }
-  .sidebar-nav { gap:1px; }
-  .sidebar-nav a { padding:7px 9px; border-radius:9px; font-size:.76rem; gap:9px; }
-  .sidebar-nav a .nav-ic { width:16px; font-size:.88rem; }
-  .sidebar-footer { padding-top:9px; }
-  .sidebar-logout { padding:7px 9px; font-size:.76rem; }
+ /* Keep the navigation in normal flex flow for reliable Figma Capture. */
+ .sidebar {
+ position:relative !important; top:auto !important; left:auto !important;
+ width:230px; height:100vh; min-height:0; flex:0 0 230px;
+ padding:18px 14px; overflow:hidden;
+ }
+ .sidebar-brand { padding:0 6px 12px; font-size:1.02rem; }
+ .sidebar-section-label { padding:9px 9px 4px; font-size:.58rem; }
+ .sidebar-nav { gap:1px; }
+ .sidebar-nav a { padding:7px 9px; border-radius:9px; font-size:.76rem; gap:9px; }
+ .sidebar-nav a .nav-ic { width:16px; font-size:.88rem; }
+ .sidebar-footer { padding-top:9px; }
+ .sidebar-logout { padding:7px 9px; font-size:.76rem; }
 
-  .main-content { flex:1 1 auto; width:calc(100% - 230px); min-width:0; height:100vh; overflow:hidden; }
-  .topbar {
-    position:relative !important; top:auto !important;
-    height:58px; min-height:58px; padding:0 22px;
-  }
-  .topbar-left h1 { font-size:1.05rem; }
-  .topbar-icon-btn { width:34px; height:34px; border-radius:10px; }
+ .main-content { flex:1 1 auto; width:calc(100% - 230px); min-width:0; height:100vh; overflow:hidden; }
+ .topbar {
+ position:relative !important; top:auto !important;
+ height:58px; min-height:58px; padding:0 22px;
+ }
+ .topbar-left h1 { font-size:1.05rem; }
+ .topbar-icon-btn { width:34px; height:34px; border-radius:10px; }
 
-  .page-body {
-    height:calc(100vh - 58px); min-height:0; overflow:hidden;
-    padding:18px 22px; box-sizing:border-box;
-  }
-  .page-head { margin-bottom:14px; gap:8px; }
-  .page-head p { font-size:.82rem; }
-  .page-head h2, .dashboard-welcome { font-size:1.35rem; margin:0 0 2px; }
+ .page-body {
+ height:calc(100vh - 58px); min-height:0; overflow:hidden;
+ padding:18px 22px; box-sizing:border-box;
+ }
+ .page-head { margin-bottom:14px; gap:8px; }
+ .page-head p { font-size:.82rem; }
+ .page-head h2, .dashboard-welcome { font-size:1.35rem; margin:0 0 2px; }
 
-  .card { border-radius:14px; }
-  .card-pad { padding:16px; }
-  .card-head { margin-bottom:10px; }
-  .card-head h3 { font-size:.95rem; }
-  .grid-2 { gap:14px; margin-bottom:14px; }
-  .grid-3 { gap:14px; }
-  .stat-grid { gap:12px; margin-bottom:14px; }
-  .stat-card { padding:14px; }
-  .stat-top { margin-bottom:8px; }
-  .stat-value { font-size:1.45rem; }
+ .card { border-radius:14px; }
+ .card-pad { padding:16px; }
+ .card-head { margin-bottom:10px; }
+ .card-head h3 { font-size:.95rem; }
+ .grid-2 { gap:14px; margin-bottom:14px; }
+ .grid-3 { gap:14px; }
+ .stat-grid { gap:12px; margin-bottom:14px; }
+ .stat-card { padding:14px; }
+ .stat-top { margin-bottom:8px; }
+ .stat-value { font-size:1.45rem; }
 
-  /* Tables: compact enough for the prototype viewport without clipping. */
-  .table-toolbar { margin-bottom:10px; gap:8px; }
-  .search-box input, .toolbar-filters select { min-height:36px; padding-top:7px; padding-bottom:7px; }
-  .data-table th { padding:8px 12px; font-size:.66rem; }
-  .data-table td { padding:8px 12px; font-size:.80rem; }
-  .crop-icon-badge, .crop-image-chip { width:24px; height:24px; }
-  .pagination { margin-top:10px; }
-  .pagination button { width:30px; height:30px; }
+ /* Tables: compact enough viewport without clipping. */
+ .table-toolbar { margin-bottom:10px; gap:8px; }
+ .search-box input, .toolbar-filters select { min-height:36px; padding-top:7px; padding-bottom:7px; }
+ .data-table th { padding:8px 12px; font-size:.66rem; }
+ .data-table td { padding:8px 12px; font-size:.80rem; }
+ .crop-icon-badge, .crop-image-chip { width:24px; height:24px; }
+ .pagination { margin-top:10px; }
+ .pagination button { width:30px; height:30px; }
 
-  /* Dashboard */
-  .featured-crop-card { margin-bottom:12px !important; }
-  .featured-crop-grid { min-height:0; }
-  .fc-left, .fc-right { padding:16px !important; }
-  .fc-mini-chart-wrap { height:100px !important; }
-  .insight-card { margin-bottom:12px !important; padding:14px !important; }
-  .market-today-card { padding:16px !important; }
-  .mt-stats-row { margin:12px 0 !important; }
+ /* Dashboard */
+ .featured-crop-card { margin-bottom:12px !important; }
+ .featured-crop-grid { min-height:0; }
+ .fc-left, .fc-right { padding:16px !important; }
+ .fc-mini-chart-wrap { height:100px !important; }
+ .insight-card { margin-bottom:12px !important; padding:14px !important; }
+ .market-today-card { padding:16px !important; }
+ .mt-stats-row { margin:12px 0 !important; }
 
-  /* Forecast */
-  .forecast-controls { gap:10px; }
-  .forecast-controls .form-group { min-width:170px; }
-  .period-toggle { width:max-content; }
-  .period-toggle button { padding:7px 12px; font-size:.78rem; }
-  .canvas-wrap canvas { height:220px !important; max-height:220px !important; }
-  .legend-row { margin-top:8px; gap:12px; }
-  .result-metrics { gap:10px; margin:12px 0; }
-  .metric-box { padding:12px !important; }
-  #forecastResults .grid-2 { grid-template-columns:minmax(0,1.55fr) minmax(250px,.75fr); }
-  #forecastResults > .card.card-pad { padding:12px 16px; }
-  #forecastInsightCard { margin-top:12px !important; padding:12px 14px !important; }
-  #forecastTableBody tr:nth-child(n+7) { display:none; }
+ /* Forecast */
+ .forecast-controls { gap:10px; }
+ .forecast-controls .form-group { min-width:170px; }
+ .period-toggle { width:max-content; }
+ .period-toggle button { padding:7px 12px; font-size:.78rem; }
+ .canvas-wrap canvas { height:220px !important; max-height:220px !important; }
+ .legend-row { margin-top:8px; gap:12px; }
+ .result-metrics { gap:10px; margin:12px 0; }
+ .metric-box { padding:12px !important; }
+ #forecastResults .grid-2 { grid-template-columns:minmax(0,1.55fr) minmax(250px,.75fr); }
+ #forecastResults > .card.card-pad { padding:12px 16px; }
+ #forecastInsightCard { margin-top:12px !important; padding:12px 14px !important; }
+ #forecastTableBody tr:nth-child(n+7) { display:none; }
 
-  /* Market recommendation */
-  #marketSpotlightCard { margin-bottom:12px !important; padding:14px !important; }
-  #spotlightCropsList { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px 10px; }
-  .mini-crop-row { padding:5px 0 !important; }
-  #recCardWrap { padding:14px !important; }
-  .rec-card { margin-bottom:8px !important; }
-  .recommendation-actions { margin:8px 0 10px !important; }
-  #recEmpty { padding:36px 20px; }
+ /* Market recommendation */
+ #marketSpotlightCard { margin-bottom:12px !important; padding:14px !important; }
+ #spotlightCropsList { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px 10px; }
+ .mini-crop-row { padding:5px 0 !important; }
+ #recCardWrap { padding:14px !important; }
+ .rec-card { margin-bottom:8px !important; }
+ .recommendation-actions { margin:8px 0 10px !important; }
+ #recEmpty { padding:36px 20px; }
 
-  /* Profit estimation: two-column calculator/result presentation. */
-  .profit-layout { gap:14px; grid-template-columns:minmax(0,1fr) minmax(320px,.85fr); align-items:start; }
-  .profit-layout .card-pad { padding:14px; }
-  .profit-form-grid { gap:9px 12px; }
-  .profit-form-grid .form-group { margin-bottom:0; }
-  .profit-result { padding:16px !important; }
+ /* Profit estimation: two-column calculator/result presentation. */
+ .profit-layout { gap:14px; grid-template-columns:minmax(0,1fr) minmax(320px,.85fr); align-items:start; }
+ .profit-layout .card-pad { padding:14px; }
+ .profit-form-grid { gap:9px 12px; }
+ .profit-form-grid .form-group { margin-bottom:0; }
+ .profit-result { padding:16px !important; }
 
-  /* Reports: place the two charts side-by-side instead of stacking them. */
-  body[data-prototype-page="reports"] .stat-grid { grid-template-columns:repeat(4,1fr); }
-  body[data-prototype-page="reports"] .reports-chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  body[data-prototype-page="reports"] .reports-chart-grid > .card { min-width:0; }
-  body[data-prototype-page="reports"] .canvas-wrap canvas { height:300px !important; max-height:300px !important; }
+ /* Reports: place the two charts side-by-side instead of stacking them. */
+ body[data--page="reports"] .stat-grid { grid-template-columns:repeat(4,1fr); }
+ body[data--page="reports"] .reports-chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+ body[data--page="reports"] .reports-chart-grid > .card { min-width:0; }
+ body[data--page="reports"] .canvas-wrap canvas { height:300px !important; max-height:300px !important; }
 
-  /* Profile: use the viewport horizontally rather than stacking all cards. */
-  body[data-prototype-page="profile"] .profile-prototype-grid {
-    display:grid; grid-template-columns:minmax(330px,.8fr) minmax(0,1.2fr); gap:14px; align-items:start;
-  }
-  body[data-prototype-page="profile"] .profile-prototype-left { display:flex; flex-direction:column; gap:12px; }
-  body[data-prototype-page="profile"] .profile-prototype-left > .card,
-  body[data-prototype-page="profile"] .profile-prototype-grid > .card { margin:0 !important; max-width:none !important; }
-  body[data-prototype-page="profile"] .profile-menu-list { gap:5px; }
-  body[data-prototype-page="profile"] .profile-menu-item { padding:9px 12px; }
-  body[data-prototype-page="profile"] .profile-header { gap:12px; }
+ /* Profile: use the viewport horizontally rather than stacking all cards. */
+ body[data--page="profile"] .profile--grid {
+ display:grid; grid-template-columns:minmax(330px,.8fr) minmax(0,1.2fr); gap:14px; align-items:start;
+ }
+ body[data--page="profile"] .profile--left { display:flex; flex-direction:column; gap:12px; }
+ body[data--page="profile"] .profile--left > .card,
+ body[data--page="profile"] .profile--grid > .card { margin:0 !important; max-width:none !important; }
+ body[data--page="profile"] .profile-menu-list { gap:5px; }
+ body[data--page="profile"] .profile-menu-item { padding:9px 12px; }
+ body[data--page="profile"] .profile-header { gap:12px; }
 
-  /* Settings. Normal flex-flow sidebar is particularly important for Capture. */
-  .settings-layout { width:100%; max-width:none; }
-  .settings-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; width:100%; }
-  .settings-card { width:100%; min-width:0; padding:14px 16px; }
-  .settings-card-icon { width:36px; height:36px; }
-  .settings-card-desc { font-size:.74rem; }
-  .settings-modal { max-height:850px; overflow:hidden; }
-  .appearance-choice { width:100%; max-width:430px; display:grid; grid-template-columns:repeat(3,1fr); }
-  .appearance-choice button { min-width:0; padding:8px 10px; }
+ /* Settings. Normal flex-flow sidebar is particularly important for Capture. */
+ .settings-layout { width:100%; max-width:none; }
+ .settings-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; width:100%; }
+ .settings-card { width:100%; min-width:0; padding:14px 16px; }
+ .settings-card-icon { width:36px; height:36px; }
+ .settings-card-desc { font-size:.74rem; }
+ .settings-modal { max-height:850px; overflow:hidden; }
+ .appearance-choice { width:100%; max-width:430px; display:grid; grid-template-columns:repeat(3,1fr); }
+ .appearance-choice button { min-width:0; padding:8px 10px; }
 
-  /* Notifications */
-  .notifications-list { gap:9px; }
-  .notification-card { padding:12px 14px; }
-  .notification-icon { width:38px; height:38px; }
-  .notification-body p { margin:4px 0 6px; font-size:.80rem; }
+ /* Notifications */
+ .notifications-list { gap:9px; }
+ .notification-card { padding:12px 14px; }
+ .notification-icon { width:38px; height:38px; }
+ .notification-body p { margin:4px 0 6px; font-size:.80rem; }
 
-  /* Form compaction */
-  .form-group { margin-bottom:10px; }
-  .form-group label { margin-bottom:4px; font-size:.78rem; }
-  input, select, textarea { min-height:36px; padding-top:7px; padding-bottom:7px; }
-  .btn { min-height:36px; padding-top:8px; padding-bottom:8px; }
+ /* Form compaction */
+ .form-group { margin-bottom:10px; }
+ .form-group label { margin-bottom:4px; font-size:.78rem; }
+ input, select, textarea { min-height:36px; padding-top:7px; padding-bottom:7px; }
+ .btn { min-height:36px; padding-top:8px; padding-bottom:8px; }
 
 
-  /* Capture stability: avoid transient states and unsupported blur/sticky
-     effects while the desktop prototype is being imported into Figma. */
-  html { scroll-behavior:auto !important; }
-  body.app *, body.app *::before, body.app *::after {
-    animation:none !important;
-    transition:none !important;
-  }
-  .topbar {
-    backdrop-filter:none !important;
-    -webkit-backdrop-filter:none !important;
-    background:var(--cream) !important;
-  }
-  .inline-feedback {
-    position:relative !important;
-    top:auto !important;
-  }
-  .settings-modal {
-    overflow:visible !important;
-  }
-  .bottom-nav {
-    display:none !important;
-  }
+ /* Capture stability: avoid transient states and unsupported blur/sticky
+ effects while the desktop is being imported into Figma. */
+ html { scroll-behavior:auto !important; }
+ body.app *, body.app *::before, body.app *::after {
+ animation:none !important;
+ transition:none !important;
+ }
+ .topbar {
+ backdrop-filter:none !important;
+ -webkit-backdrop-filter:none !important;
+ background:var(--cream) !important;
+ }
+ .inline-feedback {
+ position:relative !important;
+ top:auto !important;
+ }
+ .settings-modal {
+ overflow:visible !important;
+ }
+ .bottom-nav {
+ display:none !important;
+ }
 
 }

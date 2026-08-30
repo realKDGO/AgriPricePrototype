@@ -11,90 +11,90 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/responsive.css">
-<link rel="stylesheet" href="css/prototype-1440.css">
+<link rel="stylesheet" href="css/-1440.css">
 </head>
 <body class="app">
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
 
 <div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="main-content">
-    <header class="topbar" id="topbar"></header>
+ <aside class="sidebar" id="sidebar"></aside>
+ <div class="main-content">
+ <header class="topbar" id="topbar"></header>
 
-    <main class="page-body">
-      <div class="page-head">
-        <div><p>Simulate a crop price forecast using historical trend patterns.</p></div>
-      </div>
+ <main class="page-body">
+ <div class="page-head">
+ <div><p>Simulate a crop price forecast using historical trend patterns.</p></div>
+ </div>
 
-      <div class="card card-pad" style="margin-bottom:22px;">
-        <div class="forecast-controls">
-          <div class="form-group">
-            <label for="forecastCrop">Crop</label>
-            <select id="forecastCrop"></select>
-          </div>
-          <div class="form-group">
-            <label>Forecast Period</label>
-            <div class="period-toggle">
-              <button type="button" class="active" data-months="1">1 Month</button>
-              <button type="button" data-months="3">3 Months</button>
-              <button type="button" data-months="6">6 Months</button>
-            </div>
-          </div>
-        </div>
-      </div>
+ <div class="card card-pad" style="margin-bottom:22px;">
+ <div class="forecast-controls">
+ <div class="form-group">
+ <label for="forecastCrop">Crop</label>
+ <select id="forecastCrop"></select>
+ </div>
+ <div class="form-group">
+ <label>Forecast Period</label>
+ <div class="period-toggle">
+ <button type="button" class="active" data-months="1">1 Month</button>
+ <button type="button" data-months="3">3 Months</button>
+ <button type="button" data-months="6">6 Months</button>
+ </div>
+ </div>
+ </div>
+ </div>
 
-      <div id="forecastResults">
-        <div class="grid-2">
-          <div class="card card-pad forecast-chart-card">
-            <div class="card-head">
-              <h3>Forecast Chart — <span id="cropLabel"></span></h3>
-            </div>
-            <div class="canvas-wrap"><canvas id="forecastCanvas"></canvas></div>
-            <div class="legend-row">
-              <div class="legend-item"><span class="legend-dot" style="background:var(--leaf);"></span>Historical + Forecast Price</div>
-              <div class="legend-item"><span class="legend-dot" style="background:var(--amber);"></span>Forecast Start Marker</div>
-            </div>
-          </div>
+ <div id="forecastResults">
+ <div class="grid-2">
+ <div class="card card-pad forecast-chart-card">
+ <div class="card-head">
+ <h3>Forecast Chart — <span id="cropLabel"></span></h3>
+ </div>
+ <div class="canvas-wrap"><canvas id="forecastCanvas"></canvas></div>
+ <div class="legend-row">
+ <div class="legend-item"><span class="legend-dot" style="background:var(--leaf);"></span>Historical + Forecast Price</div>
+ <div class="legend-item"><span class="legend-dot" style="background:var(--amber);"></span>Forecast Start Marker</div>
+ </div>
+ </div>
 
-          <div class="card card-pad">
-            <h3 style="margin-bottom:16px;">Forecast Summary</h3>
-            <div class="metric-box" style="margin-bottom:14px;">
-              <div class="m-label">Predicted Price</div>
-              <div class="m-value" id="predictedPrice">₱0</div>
-            </div>
-            <div class="metric-box amber" style="margin-bottom:14px;">
-              <div class="m-label">Confidence</div>
-              <div class="m-value" id="confidenceValue">0%</div>
-            </div>
-            <div class="metric-box soil">
-              <div class="m-label">Trend Direction</div>
-              <div class="m-value" id="trendValue" style="font-size:1.1rem;">Stable</div>
-              <div class="trend-inline">
-                <span class="badge stable" id="trendBadgeInline">Stable</span>
-                <span class="trend-caption">Expected price movement over the selected period.</span>
-              </div>
-            </div>
-          </div>
-        </div>
+ <div class="card card-pad">
+ <h3 style="margin-bottom:16px;">Forecast Summary</h3>
+ <div class="metric-box" style="margin-bottom:14px;">
+ <div class="m-label">Predicted Price</div>
+ <div class="m-value" id="predictedPrice">₱0</div>
+ </div>
+ <div class="metric-box amber" style="margin-bottom:14px;">
+ <div class="m-label">Confidence</div>
+ <div class="m-value" id="confidenceValue">0%</div>
+ </div>
+ <div class="metric-box soil">
+ <div class="m-label">Trend Direction</div>
+ <div class="m-value" id="trendValue" style="font-size:1.1rem;">Stable</div>
+ <div class="trend-inline">
+ <span class="badge stable" id="trendBadgeInline">Stable</span>
+ <span class="trend-caption">Expected price movement over the selected period.</span>
+ </div>
+ </div>
+ </div>
+ </div>
 
-        <div class="card card-pad">
-          <div class="card-head"><h3>Forecast Table</h3></div>
-          <table class="data-table">
-            <thead><tr><th>Date</th><th>Period</th><th>Predicted Price</th><th>Week-over-Week</th></tr></thead>
-            <tbody id="forecastTableBody"></tbody>
-          </table>
-        </div>
+ <div class="card card-pad">
+ <div class="card-head"><h3>Forecast Table</h3></div>
+ <table class="data-table">
+ <thead><tr><th>Date</th><th>Period</th><th>Predicted Price</th><th>Week-over-Week</th></tr></thead>
+ <tbody id="forecastTableBody"></tbody>
+ </table>
+ </div>
 
-        <div class="card insight-card" id="forecastInsightCard" style="margin-top:22px;">
-          <div class="insight-icon"><i class="fa-solid fa-lightbulb"></i></div>
-          <div class="insight-body">
-            <h3>Forecast Insight</h3>
-            <p id="forecastInsightText">Based on historical trends, prices are likely to shift over the coming period.</p>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
+ <div class="card insight-card" id="forecastInsightCard" style="margin-top:22px;">
+ <div class="insight-icon"><i class="fa-solid fa-lightbulb"></i></div>
+ <div class="insight-body">
+ <h3>Forecast Insight</h3>
+ <p id="forecastInsightText">Based on historical trends, prices are likely to shift over the coming period.</p>
+ </div>
+ </div>
+ </div>
+ </main>
+ </div>
 </div>
 
 <script src="js/storage.js"></script>

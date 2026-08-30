@@ -11,40 +11,40 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/responsive.css">
-<link rel="stylesheet" href="css/prototype-1440.css">
+<link rel="stylesheet" href="css/-1440.css">
 </head>
-<body class="app" data-prototype-page="reports">
+<body class="app" data--page="reports">
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
 
 <div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="main-content">
-    <header class="topbar" id="topbar"></header>
+ <aside class="sidebar" id="sidebar"></aside>
+ <div class="main-content">
+ <header class="topbar" id="topbar"></header>
 
-    <main class="page-body">
-      <div class="page-head">
-        <div><p>A snapshot of price behavior across Rizal Province markets.</p></div>
-      </div>
+ <main class="page-body">
+ <div class="page-head">
+ <div><p>A snapshot of price behavior across Rizal Province markets.</p></div>
+ </div>
 
-      <div class="stat-grid">
-        <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-arrow-trend-up"></i></div><div class="a-val" id="statHighest">₱0</div><div class="a-lab">Highest Price</div></div>
-        <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-arrow-trend-down"></i></div><div class="a-val" id="statLowest">₱0</div><div class="a-lab">Lowest Price</div></div>
-        <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-chart-column"></i></div><div class="a-val" id="statAverage">₱0</div><div class="a-lab">Average Price</div></div>
-        <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-trophy"></i></div><div class="a-val" id="statMostSold">—</div><div class="a-lab">Most Sold Crop</div></div>
-      </div>
+ <div class="stat-grid">
+ <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-arrow-trend-up"></i></div><div class="a-val" id="statHighest">₱0</div><div class="a-lab">Highest Price</div></div>
+ <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-arrow-trend-down"></i></div><div class="a-val" id="statLowest">₱0</div><div class="a-lab">Lowest Price</div></div>
+ <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-chart-column"></i></div><div class="a-val" id="statAverage">₱0</div><div class="a-lab">Average Price</div></div>
+ <div class="card analytics-card"><div class="a-ic"><i class="fa-solid fa-trophy"></i></div><div class="a-val" id="statMostSold">—</div><div class="a-lab">Most Sold Crop</div></div>
+ </div>
 
-      <div class="reports-chart-grid">
-        <div class="card card-pad">
-          <div class="card-head"><h3>Monthly Price Trend (Average, ₱/kg)</h3></div>
-          <div class="canvas-wrap"><canvas id="trendCanvas"></canvas></div>
-        </div>
-        <div class="card card-pad">
-          <div class="card-head"><h3>Average Price by Crop</h3></div>
-          <div class="canvas-wrap"><canvas id="cropBarCanvas"></canvas></div>
-        </div>
-      </div>
-    </main>
-  </div>
+ <div class="reports-chart-grid">
+ <div class="card card-pad">
+ <div class="card-head"><h3>Monthly Price Trend (Average, ₱/kg)</h3></div>
+ <div class="canvas-wrap"><canvas id="trendCanvas"></canvas></div>
+ </div>
+ <div class="card card-pad">
+ <div class="card-head"><h3>Average Price by Crop</h3></div>
+ <div class="canvas-wrap"><canvas id="cropBarCanvas"></canvas></div>
+ </div>
+ </div>
+ </main>
+ </div>
 </div>
 
 <script src="js/storage.js"></script>
@@ -54,30 +54,30 @@
 <script src="js/layout.js"></script>
 <script src="js/charts.js"></script>
 <script>
-  AgriLayout.init('reports.html', 'Reports & Analytics');
+ AgriLayout.init('reports.html', 'Reports & Analytics');
 
-  const A = AgriData.ANALYTICS;
-  document.getElementById('statHighest').textContent = AgriUtils.pesoRound(A.highest.price);
-  document.getElementById('statLowest').textContent = AgriUtils.pesoRound(A.lowest.price);
-  document.getElementById('statAverage').textContent = AgriUtils.pesoRound(A.average);
-  document.getElementById('statMostSold').textContent = A.mostSold;
+ const A = AgriData.ANALYTICS;
+ document.getElementById('statHighest').textContent = AgriUtils.pesoRound(A.highest.price);
+ document.getElementById('statLowest').textContent = AgriUtils.pesoRound(A.lowest.price);
+ document.getElementById('statAverage').textContent = AgriUtils.pesoRound(A.average);
+ document.getElementById('statMostSold').textContent = A.mostSold;
 
-  function drawCharts(){
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    AgriCharts.lineChart(document.getElementById('trendCanvas'), [
-      { data: A.monthlyTrend, color: AgriCharts.palette.leaf }
-    ], months, {});
+ function drawCharts(){
+ const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+ AgriCharts.lineChart(document.getElementById('trendCanvas'), [
+ { data: A.monthlyTrend, color: AgriCharts.palette.leaf }
+ ], months, {});
 
-    const cropAverages = AgriData.CROPS.map(c => {
-      const matches = AgriData.CROP_PRICES.filter(p => p.crop === c.name);
-      const avg = matches.reduce((s,p) => s + p.price, 0) / (matches.length || 1);
-      return { label: c.name.slice(0,3), value: Math.round(avg) };
-    });
-    AgriCharts.barChart(document.getElementById('cropBarCanvas'), cropAverages, AgriCharts.palette.soil);
-  }
+ const cropAverages = AgriData.CROPS.map(c => {
+ const matches = AgriData.CROP_PRICES.filter(p => p.crop === c.name);
+ const avg = matches.reduce((s,p) => s + p.price, 0) / (matches.length || 1);
+ return { label: c.name.slice(0,3), value: Math.round(avg) };
+ });
+ AgriCharts.barChart(document.getElementById('cropBarCanvas'), cropAverages, AgriCharts.palette.soil);
+ }
 
-  drawCharts();
-  window.addEventListener('resize', AgriUtils.debounce(drawCharts, 300));
+ drawCharts();
+ window.addEventListener('resize', AgriUtils.debounce(drawCharts, 300));
 </script>
 <script src="js/custom-select.js"></script>
 <script src="js/capture-fields.js"></script>

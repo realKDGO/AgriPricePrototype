@@ -11,83 +11,83 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/responsive.css">
-<link rel="stylesheet" href="css/prototype-1440.css">
+<link rel="stylesheet" href="css/-1440.css">
 <style>
 @media (min-width:900px){
-  .pe-form-grid{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px 14px!important}
-  .pe-form-grid .pe-market-full{grid-column:1 / -1!important}
+ .pe-form-grid{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px 14px!important}
+ .pe-form-grid .pe-market-full{grid-column:1 / -1!important}
 }
 </style>
 
 <style>
 @media (min-width:900px){
-  .profit-form-grid,
-  .pe-form-grid{
-    display:grid !important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-    grid-auto-rows:auto !important;
-    align-items:start !important;
-    gap:12px 14px !important;
-  }
-  .pe-form-grid > .form-group,
-  .profit-form-grid > .form-group{
-    width:100% !important;
-    margin-bottom:0 !important;
-  }
-  .pe-form-grid .pe-market-full,
-  .profit-form-grid .pe-market-full{
-    grid-column:1 / -1 !important;
-  }
-  .pe-form-grid input,
-  .pe-form-grid .modern-select,
-  .profit-form-grid input,
-  .profit-form-grid .modern-select{
-    width:100% !important;
-  }
+ .profit-form-grid,
+ .pe-form-grid{
+ display:grid !important;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+ grid-auto-rows:auto !important;
+ align-items:start !important;
+ gap:12px 14px !important;
+ }
+ .pe-form-grid > .form-group,
+ .profit-form-grid > .form-group{
+ width:100% !important;
+ margin-bottom:0 !important;
+ }
+ .pe-form-grid .pe-market-full,
+ .profit-form-grid .pe-market-full{
+ grid-column:1 / -1 !important;
+ }
+ .pe-form-grid input,
+ .pe-form-grid .modern-select,
+ .profit-form-grid input,
+ .profit-form-grid .modern-select{
+ width:100% !important;
+ }
 }
 </style>
 
 <style>
 @media (min-width:900px){
-  .profit-form-grid{
-    display:block !important;
-    width:100% !important;
-    max-width:none !important;
-  }
+ .profit-form-grid{
+ display:block !important;
+ width:100% !important;
+ max-width:none !important;
+ }
 
-  .profit-form-grid > .pe-form-grid{
-    width:100% !important;
-    max-width:none !important;
-  }
+ .profit-form-grid > .pe-form-grid{
+ width:100% !important;
+ max-width:none !important;
+ }
 
-  .pe-form-grid{
-    display:grid !important;
-    grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-    column-gap:16px !important;
-    row-gap:12px !important;
-    width:100% !important;
-    max-width:none !important;
-  }
+ .pe-form-grid{
+ display:grid !important;
+ grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+ column-gap:16px !important;
+ row-gap:12px !important;
+ width:100% !important;
+ max-width:none !important;
+ }
 
-  .pe-form-grid > .form-group{
-    width:100% !important;
-    max-width:none !important;
-    min-width:0 !important;
-    margin:0 !important;
-  }
+ .pe-form-grid > .form-group{
+ width:100% !important;
+ max-width:none !important;
+ min-width:0 !important;
+ margin:0 !important;
+ }
 
-  .pe-form-grid input,
-  .pe-form-grid select,
-  .pe-form-grid .modern-select,
-  .pe-form-grid .modern-select-button{
-    width:100% !important;
-    max-width:none !important;
-    box-sizing:border-box !important;
-  }
+ .pe-form-grid input,
+ .pe-form-grid select,
+ .pe-form-grid .modern-select,
+ .pe-form-grid .modern-select-button{
+ width:100% !important;
+ max-width:none !important;
+ box-sizing:border-box !important;
+ }
 
-  .pe-form-grid .pe-market-full{
-    grid-column:1 / -1 !important;
-  }
+ .pe-form-grid .pe-market-full{
+ grid-column:1 / -1 !important;
+ }
 }
 </style>
 </head>
@@ -95,63 +95,63 @@
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
 
 <div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
-  <div class="main-content">
-    <header class="topbar" id="topbar"></header>
+ <aside class="sidebar" id="sidebar"></aside>
+ <div class="main-content">
+ <header class="topbar" id="topbar"></header>
 
-    <main class="page-body">
-      <div class="page-head">
-        <div><p>Review the sale details, add your remaining expenses, and see your estimated earnings automatically.</p></div>
-      </div>
+ <main class="page-body">
+ <div class="page-head">
+ <div><p>Review the sale details, add your remaining expenses, and see your estimated earnings automatically.</p></div>
+ </div>
 
-      <div class="transfer-banner" id="recommendationBanner" style="display:none;">
-        <i class="fa-solid fa-circle-check"></i>
-        <div><strong>Market recommendation loaded.</strong><span>Your crop, quantity, and recommended market were carried over automatically.</span></div>
-      </div>
+ <div class="transfer-banner" id="recommendationBanner" style="display:none;">
+ <i class="fa-solid fa-circle-check"></i>
+ <div><strong>Market recommendation loaded.</strong><span>Your crop, quantity, and recommended market were carried over automatically.</span></div>
+ </div>
 
-      <div class="profit-layout profit-layout--enhanced">
-        <div class="card card-pad">
-          <h3 style="margin-bottom:18px;">Sale & Expense Details</h3>
-          <div class="profit-form-grid">
-        <div class="pe-form-grid">
-          <div class="form-group">
-            <label for="peCrop">Crop</label>
-            <select id="peCrop"></select>
-          </div>
-          <div class="form-group">
-            <label for="peQty">Quantity (kg)</label>
-            <input type="number" id="peQty" min="1" step="1" value="100">
-          </div>
-          <div class="form-group">
-            <label for="peSellPrice">Selling Price / kg</label>
-            <input type="text" id="peSellPrice" readonly>
-          </div>
-          <div class="form-group">
-            <label for="peOtherExpenses">Other Expenses (₱)</label>
-            <input type="number" id="peOtherExpenses" min="0" step="0.5" value="0" placeholder="Enter transportation, packaging, labor, and other expenses">
-          </div>
-          <div class="form-group pe-market-full">
-            <label for="peMarket">Market</label>
-            <select id="peMarket"></select>
-          </div>
-        </div>
-        
-      </div>
-          <p class="field-hint">Selling price uses the shared market-price dataset. Enter transportation, packaging, labor, and any other costs under Other Expenses.</p>
-        </div>
+ <div class="profit-layout profit-layout--enhanced">
+ <div class="card card-pad">
+ <h3 style="margin-bottom:18px;">Sale & Expense Details</h3>
+ <div class="profit-form-grid">
+ <div class="pe-form-grid">
+ <div class="form-group">
+ <label for="peCrop">Crop</label>
+ <select id="peCrop"></select>
+ </div>
+ <div class="form-group">
+ <label for="peQty">Quantity (kg)</label>
+ <input type="number" id="peQty" min="1" step="1" value="100">
+ </div>
+ <div class="form-group">
+ <label for="peSellPrice">Selling Price / kg</label>
+ <input type="text" id="peSellPrice" readonly>
+ </div>
+ <div class="form-group">
+ <label for="peOtherExpenses">Other Expenses (₱)</label>
+ <input type="number" id="peOtherExpenses" min="0" step="0.5" value="0" placeholder="Enter transportation, packaging, labor, and other expenses">
+ </div>
+ <div class="form-group pe-market-full">
+ <label for="peMarket">Market</label>
+ <select id="peMarket"></select>
+ </div>
+ </div>
+ 
+ </div>
+ 
+ </div>
 
-        <div class="card card-pad profit-summary-card">
-          <h3 style="margin-bottom:8px;">Estimated Net Earnings</h3>
-          <p style="margin-bottom:18px;">Results update automatically whenever you change an input.</p>
-          <div class="profit-result-row"><span class="pr-label">Gross Sales</span><span class="pr-value" id="peGross">₱0.00</span></div>
-          
-          <div class="profit-result-row"><span class="pr-label">Total Expenses</span><span class="pr-value" id="peTotalExpenses">₱0.00</span></div>
-          <div class="profit-result-row total"><span class="pr-label">Estimated Net Earnings</span><span class="pr-value" id="peNet">₱0.00</span></div>
-          <div class="profit-margin-box"><span>Profit Margin</span><strong id="peMargin">0%</strong></div>
-        </div>
-      </div>
-    </main>
-  </div>
+ <div class="card card-pad profit-summary-card">
+ <h3 style="margin-bottom:8px;">Estimated Net Earnings</h3>
+ <p style="margin-bottom:18px;">Results update automatically whenever you change an input.</p>
+ <div class="profit-result-row"><span class="pr-label">Gross Sales</span><span class="pr-value" id="peGross">₱0.00</span></div>
+ 
+ <div class="profit-result-row"><span class="pr-label">Total Expenses</span><span class="pr-value" id="peTotalExpenses">₱0.00</span></div>
+ <div class="profit-result-row total"><span class="pr-label">Estimated Net Earnings</span><span class="pr-value" id="peNet">₱0.00</span></div>
+ <div class="profit-margin-box"><span>Profit Margin</span><strong id="peMargin">0%</strong></div>
+ </div>
+ </div>
+ </main>
+ </div>
 </div>
 
 <script src="js/storage.js"></script>
@@ -160,53 +160,53 @@
 <script src="js/data.js"></script>
 <script src="js/layout.js"></script>
 <script>
-  AgriLayout.init('profit-estimation.html', 'Profit Estimation');
+ AgriLayout.init('profit-estimation.html', 'Profit Estimation');
 
-  const peCrop = document.getElementById('peCrop');
-  const peMarket = document.getElementById('peMarket');
-  const qtyEl = document.getElementById('peQty');
-  const otherExpensesEl = document.getElementById('peOtherExpenses');
-  
-  const params = new URLSearchParams(window.location.search);
+ const peCrop = document.getElementById('peCrop');
+ const peMarket = document.getElementById('peMarket');
+ const qtyEl = document.getElementById('peQty');
+ const otherExpensesEl = document.getElementById('peOtherExpenses');
+ 
+ const params = new URLSearchParams(window.location.search);
 
-  peCrop.innerHTML = AgriData.CROPS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  peMarket.innerHTML = AgriData.MARKETS.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+ peCrop.innerHTML = AgriData.CROPS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+ peMarket.innerHTML = AgriData.MARKETS.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
 
-  if(params.get('crop') && AgriData.findCropById(params.get('crop'))) peCrop.value = params.get('crop');
-  if(params.get('market') && AgriData.findMarketById(params.get('market'))) peMarket.value = params.get('market');
-  if(Number(params.get('qty')) > 0) qtyEl.value = Number(params.get('qty'));
-  if(params.get('from') === 'recommendation') document.getElementById('recommendationBanner').style.display = 'flex';
+ if(params.get('crop') && AgriData.findCropById(params.get('crop'))) peCrop.value = params.get('crop');
+ if(params.get('market') && AgriData.findMarketById(params.get('market'))) peMarket.value = params.get('market');
+ if(Number(params.get('qty')) > 0) qtyEl.value = Number(params.get('qty'));
+ if(params.get('from') === 'recommendation') document.getElementById('recommendationBanner').style.display = 'flex';
 
-  function calculate(){
-    const qty = Math.max(Number(qtyEl.value) || 0, 0);
-    const otherExpenses = Math.max(Number(otherExpensesEl.value) || 0, 0);
-    const price = AgriData.getCropMarketPrice(peCrop.value, peMarket.value) || 0;
+ function calculate(){
+ const qty = Math.max(Number(qtyEl.value) || 0, 0);
+ const otherExpenses = Math.max(Number(otherExpensesEl.value) || 0, 0);
+ const price = AgriData.getCropMarketPrice(peCrop.value, peMarket.value) || 0;
 
-    const gross = price * qty;
-    const totalExpenses = otherExpenses;
-    const net = gross - totalExpenses;
-    const margin = gross > 0 ? (net / gross) * 100 : 0;
+ const gross = price * qty;
+ const totalExpenses = otherExpenses;
+ const net = gross - totalExpenses;
+ const margin = gross > 0 ? (net / gross) * 100 : 0;
 
-    document.getElementById('peSellPrice').value = AgriUtils.peso(price);
+ document.getElementById('peSellPrice').value = AgriUtils.peso(price);
 
-    const grossEl = document.getElementById('peGross');
-    const totalExpensesEl = document.getElementById('peTotalExpenses');
-    const netEl = document.getElementById('peNet');
-    const marginEl = document.getElementById('peMargin');
+ const grossEl = document.getElementById('peGross');
+ const totalExpensesEl = document.getElementById('peTotalExpenses');
+ const netEl = document.getElementById('peNet');
+ const marginEl = document.getElementById('peMargin');
 
-    if (grossEl) grossEl.textContent = AgriUtils.pesoRound(gross);
-    if (totalExpensesEl) totalExpensesEl.textContent = AgriUtils.pesoRound(totalExpenses);
-    if (netEl) netEl.textContent = AgriUtils.pesoRound(net);
-    if (marginEl) marginEl.textContent = `${margin.toFixed(1)}%`;
+ if (grossEl) grossEl.textContent = AgriUtils.pesoRound(gross);
+ if (totalExpensesEl) totalExpensesEl.textContent = AgriUtils.pesoRound(totalExpenses);
+ if (netEl) netEl.textContent = AgriUtils.pesoRound(net);
+ if (marginEl) marginEl.textContent = `${margin.toFixed(1)}%`;
 
-    window.AgriCaptureFields?.syncAll?.();
-  }
+ window.AgriCaptureFields?.syncAll?.();
+ }
 
-  
-  [peCrop, peMarket].forEach(el => el.addEventListener('change', calculate));
-  qtyEl.addEventListener('input', calculate);
-  otherExpensesEl.addEventListener('input', calculate);
-  calculate();
+ 
+ [peCrop, peMarket].forEach(el => el.addEventListener('change', calculate));
+ qtyEl.addEventListener('input', calculate);
+ otherExpensesEl.addEventListener('input', calculate);
+ calculate();
 </script>
 <script src="js/custom-select.js"></script>
 <script src="js/capture-fields.js"></script>

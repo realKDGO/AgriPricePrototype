@@ -15,76 +15,76 @@
 <div id="page-loader"><span class="loader-leaf"><i class="fa-solid fa-seedling"></i></span><span class="spinner dark"></span></div>
 
 <div class="auth-page">
-  <div class="auth-visual">
-    <a href="index.html" class="brand" style="color:#fff;"><span class="brand-mark"><img src="images/logo.png" alt="AgriPrice logo"></span> AgriPrice</a>
-    <div class="auth-visual-content">
-      <h2>Welcome back to your harvest dashboard.</h2>
-      <p>Sign in to check today's crop prices, review your latest forecasts, and plan your next sale across Rizal Province markets.</p>
-    </div>
-    <div class="auth-quote">
-      <p>"AgriPrice keeps every market price and forecast for Rizal in one place — no more guessing where to sell."</p>
-      <span>— AgriPrice Demo Account</span>
-    </div>
-  </div>
+ <div class="auth-visual">
+ <a href="index.html" class="brand" style="color:#fff;"><span class="brand-mark"><img src="images/logo.png" alt="AgriPrice logo"></span> AgriPrice</a>
+ <div class="auth-visual-content">
+ <h2>Welcome back to your harvest dashboard.</h2>
+ <p>Sign in to check today's crop prices, review your latest forecasts, and plan your next sale across Rizal Province markets.</p>
+ </div>
+ <div class="auth-quote">
+ <p>"AgriPrice keeps every market price and forecast for Rizal in one place — no more guessing where to sell."</p>
+ <span>— AgriPrice Demo Account</span>
+ </div>
+ </div>
 
-  <div class="auth-form-side">
-    <div class="auth-box">
-      <a href="index.html" class="brand"><span class="brand-mark"><img src="images/logo.png" alt="AgriPrice logo"></span> AgriPrice</a>
-      <h1>Sign in</h1>
-      <p>Enter your credentials to access your dashboard.</p>
+ <div class="auth-form-side">
+ <div class="auth-box">
+ <a href="index.html" class="brand"><span class="brand-mark"><img src="images/logo.png" alt="AgriPrice logo"></span> AgriPrice</a>
+ <h1>Sign in</h1>
+ <p>Enter your credentials to access your dashboard.</p>
 
-      <div class="auth-alert" id="authAlert" style="display:none;"></div>
+ <div class="auth-alert" id="authAlert" style="display:none;"></div>
 
-      <div class="auth-alert" style="background:var(--soil-pale); color:var(--soil); display:flex;">
-        <i class="fa-solid fa-circle-info"></i> <div>Demo account — <strong>demo@agriprice.ph</strong> / <strong>demo1234</strong></div>
-      </div>
+ <div class="auth-alert" style="background:var(--soil-pale); color:var(--soil); display:flex;">
+ <i class="fa-solid fa-circle-info"></i> <div>Demo account — <strong>demo@agriprice.ph</strong> / <strong>demo1234</strong></div>
+ </div>
 
-      <form id="loginForm" novalidate>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <div class="input-icon-field">
-            <i class="fa-solid fa-envelope input-icon"></i>
-            <input type="email" id="email" placeholder="you@email.com" autocomplete="email">
-          </div>
-          <div class="field-error"></div>
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <div class="input-icon-field pass-field">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-            <button type="button" class="pass-toggle" data-target="password"><i class="fa-solid fa-eye"></i></button>
-          </div>
-          <div class="field-error"></div>
-        </div>
-        <div class="form-foot">
-          <label><input type="checkbox" id="rememberMe"> Remember me</label>
-          <a href="forgot-password.html" style="color:var(--leaf); font-weight:600;">Forgot password?</a>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-      </form>
+ <form id="loginForm" novalidate>
+ <div class="form-group">
+ <label for="email">Email Address</label>
+ <div class="input-icon-field">
+ <i class="fa-solid fa-envelope input-icon"></i>
+ <input type="email" id="email" placeholder="you@email.com" autocomplete="email">
+ </div>
+ <div class="field-error"></div>
+ </div>
+ <div class="form-group">
+ <label for="password">Password</label>
+ <div class="input-icon-field pass-field">
+ <i class="fa-solid fa-lock input-icon"></i>
+ <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+ <button type="button" class="pass-toggle" data-target="password"><i class="fa-solid fa-eye"></i></button>
+ </div>
+ <div class="field-error"></div>
+ </div>
+ <div class="form-foot">
+ <label><input type="checkbox" id="rememberMe"> Remember me</label>
+ <a href="forgot-password.html" style="color:var(--leaf); font-weight:600;">Forgot password?</a>
+ </div>
+ <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+ </form>
 
-      <div class="auth-switch">Don't have an account? <a href="register.html">Create one</a></div>
-    </div>
-  </div>
+ <div class="auth-switch">Don't have an account? <a href="register.html">Create one</a></div>
+ </div>
+ </div>
 </div>
 
 <script src="js/storage.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
 <script>
-  AgriAuth.redirectIfAuthed();
+ AgriAuth.redirectIfAuthed();
 
-  document.querySelectorAll('.pass-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const input = document.getElementById(btn.dataset.target);
-      const show = input.type === 'password';
-      input.type = show ? 'text' : 'password';
-      btn.innerHTML = show ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
-    });
-  });
+ document.querySelectorAll('.pass-toggle').forEach(btn => {
+ btn.addEventListener('click', () => {
+ const input = document.getElementById(btn.dataset.target);
+ const show = input.type === 'password';
+ input.type = show ? 'text' : 'password';
+ btn.innerHTML = show ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+ });
+ });
 
-  AgriAuth.initLoginForm();
+ AgriAuth.initLoginForm();
 </script>
 <script src="js/capture-fields.js"></script>
 </body>
