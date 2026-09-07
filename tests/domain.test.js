@@ -1,0 +1,13 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { calculateReturn, latestPrices, compareMarkets, movement } from "../src/utils/format.js";
+import { initialData } from "../src/data/mock/seed.js";
+import { marketRepository } from "../src/services/marketRepository.js";
+test("net return includes both cost categories and handles a loss",()=>{assert.deepEqual(calculateReturn(100,49,120,80),{revenue:4900,transport:120,expenses:80,net:4700});assert.equal(calculateReturn(2,10,30,5).net,-15)});
+test("pending submissions do not leak into public prices",()=>{const pending=initialData.prices.find(r=>r.id==="pending-tomato");const rows=latestPrices(initialData,"tomato");assert.notEqual(rows.find(r=>r.marketId===pending.marketId).price,pending.price);assert.equal(rows.length,initialData.markets.length)});
+test("approval replaces the latest quotation without duplicating a market",()=>{const data=structuredClone(initialData);const pending=data.prices.find(r=>r.id==="pending-tomato");pending.status="Verified";const rows=latestPrices(data,"tomato");assert.equal(rows.find(r=>r.marketId===pending.marketId).price,pending.price);assert.equal(rows.length,data.markets.length)});
+test("market ranking follows net return, not headline price",()=>{const result=compareMarkets(initialData,"rice",1,20);for(let i=1;i<result.length;i++)assert.ok(result[i-1].net>=result[i].net);assert.equal(result[0].net,calculateReturn(1,result[0].price,result[0].transport,20).net)});
+test("archived markets and crops are excluded from public quotations",()=>{const data=structuredClone(initialData);const count=data.markets.length;data.markets[0].status="Archived";assert.equal(latestPrices(data,"rice").length,count-1);data.crops[0].status="Archived";assert.equal(latestPrices(data,"rice").length,0)});
+test("zero baseline movement is finite",()=>assert.equal(movement(20,0),0));
+test("all market current prices retain every crop-market relationship",()=>{const rows=marketRepository.currentPrices(initialData);assert.equal(rows.length,initialData.crops.length*initialData.markets.length);assert.equal(new Set(rows.map(row=>row.marketId)).size,initialData.markets.length);assert.equal(new Set(rows.filter(row=>row.cropId==="rice").map(row=>row.marketId)).size,initialData.markets.length)});
+test("historical records and market filtering support multiple markets",()=>{const cropIds=initialData.crops.map(crop=>crop.id);const all=marketRepository.historical(initialData,cropIds);assert.equal(new Set(all.map(row=>row.marketId)).size,initialData.markets.length);const onlyCainta=marketRepository.historical(initialData,cropIds,"cainta");assert.ok(onlyCainta.length>0);assert.ok(onlyCainta.every(row=>row.marketId==="cainta"))});
