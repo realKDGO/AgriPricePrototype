@@ -1885,3 +1885,186 @@ html[data-theme="dark"]{color-scheme:dark}html[data-theme="dark"] body{backgroun
 .auth-register .auth-form{padding-top:28px;padding-bottom:28px}.auth-register .auth-description{margin-bottom:20px!important}.auth-register .auth-switch{margin-top:17px!important}
 @media(max-height:800px) and (min-width:641px){.auth-register .auth-story{padding-top:34px;padding-bottom:32px}.auth-register .auth-form{padding-top:20px;padding-bottom:20px}.auth-register .auth-description{margin-bottom:15px!important}.auth-register .auth-form .form-stack{gap:11px}.auth-register .auth-form input:not([type="checkbox"]){min-height:46px}}
 @media(max-width:640px){.auth-options{flex-direction:row;align-items:center}.auth-register .auth-form{min-height:100dvh;justify-content:flex-start;padding-top:26px;padding-bottom:26px}.auth-register .mobile-auth-brand{margin-bottom:28px}}
+
+/* Final interaction, loading, footer, and fluid-layout polish */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+}
+
+.landing-section {
+  scroll-margin-top: 84px;
+}
+
+.button,
+.button > * {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.button:hover > *,
+.button:focus-visible > * {
+  color: inherit;
+}
+
+.button.danger {
+  background: #b6473c;
+  border-color: #b6473c;
+  color: #fff;
+}
+
+.button.danger:hover,
+.button.danger:focus-visible {
+  background: #96372f;
+  border-color: #96372f;
+  color: #fff;
+}
+
+.signout-confirmation {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+  margin-top: 4px;
+  padding: 16px;
+  border: 1px solid #efd2ce;
+  border-radius: 12px;
+  background: #fff8f7;
+}
+
+.signout-confirmation-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  background: #f7dfdc;
+  color: #a43f35;
+}
+
+.signout-confirmation strong {
+  display: block;
+  color: #5e2924;
+}
+
+.signout-confirmation p {
+  margin: 5px 0 0;
+  line-height: 1.55;
+}
+
+.skeleton-public-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.skeleton-public-brand .skeleton-brand-mark {
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  border-radius: 50%;
+}
+
+.skeleton-brand-title {
+  width: 112px;
+  height: 19px;
+  border-radius: 6px;
+}
+
+.public-footer {
+  grid-template-columns: minmax(220px, 1fr) minmax(0, auto) !important;
+  column-gap: clamp(40px, 8vw, 110px) !important;
+}
+
+.public-footer .footer-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, auto));
+  gap: clamp(28px, 5vw, 58px) !important;
+}
+
+.public-footer .legal-links {
+  display: grid;
+  gap: 11px;
+  font-size: inherit;
+}
+
+.public-footer small {
+  grid-column: 1 / -1;
+  width: 100%;
+  text-align: center;
+}
+
+/* Allow every content surface to shrink without creating viewport overflow. */
+.app-shell,
+.main-shell,
+.route-content,
+.page-container,
+.panel,
+.public-site,
+.landing-hero,
+.landing-section,
+.contact-section,
+.public-footer,
+.footer-nav,
+.feature-grid,
+.steps {
+  min-width: 0;
+}
+
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .public-footer {
+    grid-template-columns: 1fr !important;
+  }
+
+  .public-footer .footer-nav {
+    justify-content: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .public-nav {
+    padding-inline: 16px;
+  }
+
+  .public-footer .footer-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .public-footer .footer-nav > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .confirmation-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .page-container {
+    padding-inline: 14px;
+  }
+
+  .public-footer .footer-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .public-footer .footer-nav > div:last-child {
+    grid-column: auto;
+  }
+
+  .hero-actions {
+    grid-template-columns: 1fr;
+  }
+}

@@ -329,8 +329,11 @@ export default function Landing() {
             <Link to="/login">Sign In</Link>
             <Link to="/register">Create Account</Link>
           </div>
+          <div>
+            <strong>Legal</strong>
+            <LegalLinks />
+          </div>
         </div>
-        <LegalLinks />
         <small>© 2026 AgriPrice. All rights reserved.</small>
       </footer>
     </div>

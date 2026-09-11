@@ -255,9 +255,18 @@ export default function SharedLayout({ role = "FARMER" }) {
           title="Sign out of AgriPrice?"
           onClose={() => setConfirmSignOut(false)}
         >
-          <p className="muted">
-            You’ll need to sign in again to access your dashboard.
-          </p>
+          <div className="signout-confirmation">
+            <span className="signout-confirmation-icon" aria-hidden="true">
+              <LogOut size={22} />
+            </span>
+            <div>
+              <strong>Your current session will end.</strong>
+              <p className="muted">
+                You will return to the AgriPrice landing page and must sign in
+                again to access your dashboard.
+              </p>
+            </div>
+          </div>
           <div className="confirmation-actions">
             <button
               className="button secondary"
@@ -265,7 +274,7 @@ export default function SharedLayout({ role = "FARMER" }) {
             >
               Cancel
             </button>
-            <button className="button" onClick={signOut}>
+            <button className="button danger" onClick={signOut}>
               {t("Sign Out")}
             </button>
           </div>

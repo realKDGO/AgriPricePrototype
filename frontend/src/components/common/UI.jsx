@@ -480,7 +480,10 @@ export function PageSkeleton({ variant = "", chrome = false }) {
     >
       {chrome && (
         <header className="skeleton-public-header">
-          <Brand />
+          <div className="skeleton-public-brand" aria-hidden="true">
+            <SkeletonLine className="skeleton-brand-mark" />
+            <SkeletonLine className="skeleton-brand-title" />
+          </div>
           <SkeletonLine className="skeleton-public-actions" />
         </header>
       )}
