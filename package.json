@@ -17,8 +17,5 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.4"
-  },
-  "dependencies": {
-    "vitest": "5.0.0"
   }
 }
