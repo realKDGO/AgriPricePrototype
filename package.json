@@ -16,6 +16,9 @@
     "dev:all": "concurrently \"npm run dev -w backend\" \"npm run dev -w frontend\""
   },
   "devDependencies": {
-    "concurrently": "9.2.1"
+    "concurrently": "^9.2.4"
+  },
+  "dependencies": {
+    "vitest": "5.0.0"
   }
 }
