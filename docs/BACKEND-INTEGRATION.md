@@ -1,47 +1,24 @@
-# Backend integration guide
+# API integration
 
-## Current data boundary
+OpenAPI: `/api/openapi.json`; interactive Swagger: `/api/docs`.
 
-`AppProvider` loads from `mockRepository` and exposes `data`, `save`, `commit`, session actions, and feedback. Page components consume that API. The only source of initial sample records is `data/mock/seed.js`.
+Base: `/api/v1`. Successful responses use `{success:true,data:...}`. Errors use `{success:false,message,errors:[...]}`. Money from Prisma is serialized as decimal strings. Paginated collections return `items,total,page,limit,pages`, with `limit` capped at 100.
 
-The Axios instance in `services/api.js` uses `VITE_API_BASE_URL`, credentials, and a 15-second timeout. Its sample bootstrap and update methods are an adapter skeleton, not live endpoints. Replace the provider's repository calls with asynchronous operations matching the actual Express API. Add pending/error states around mutations before connecting network writes.
+| Group | Access and operations |
+|---|---|
+| `/auth` | Farmer registration, login with optional Remember me persistence, refresh cookie rotation, logout, me, password change, recovery availability |
+| `/crops`, `/markets` | Farmer/MAO reads; MAO-only create, update and archive/activate |
+| `/prices` | Current/history reads; MAO pending submissions, revisions and approve/reject |
+| `/forecasts` | Stored forecasts for Farmer/MAO; MAO-only `/generate` |
+| `/recommendations`, `/profit` | Validated server calculations for Farmer/MAO |
+| `/reports`, `/mao/dashboard` | Agricultural aggregation and MAO summary |
+| `/users/me` | Own profile and persisted preferences |
+| `/notifications` | Recipient-owned pagination, unread count, mark one/all read |
+| `/admin` | Account management, audit, security, monitoring, settings, snapshots, contacts |
+| `/contact` | Validated, rate-limited public inquiries stored in PostgreSQL |
 
-Do not send the whole mock dataset to production. Replace collection-level saves with explicit resource methods, server validation, and server-generated audit records.
+Write requests from browsers must come from the configured frontend origin. Axios sends credentials; login/refresh responses provide an access token. Refresh/logout cookie operations require Origin, including when using an API client. Admin and MAO permissions are separate, not hierarchical.
 
-## DTO concepts
+Create/update crop requests use multipart field `photo` plus name/category/unit/status. Creation requires a photo. Editing retains the image when the field is omitted. Accepted original formats are JPEG, PNG and WebP, up to 5 MB; the server verifies decoded content and converts to controlled WebP storage objects.
 
-| Resource         | Fields                                                                  |
-| ---------------- | ----------------------------------------------------------------------- |
-| Crop             | id, name, category, unit, image, status                                 |
-| Market           | id, name, location, transport, status                                   |
-| Price            | id, cropId, marketId, price, previous, date, status, source, reviewNote |
-| Historical price | id, cropId, marketId, date, price, status                               |
-| Forecast         | id, cropId, date, price, status                                         |
-| Account          | id, name, email, role, municipality, status, lastLogin                  |
-| Audit event      | id, date, actor, action, type, status                                   |
-
-Prices are Philippine pesos per kilogram. Dates are date-only ISO strings. Production monetary calculations should use a defined decimal/centavo strategy rather than unqualified JavaScript floating-point values.
-
-## Integration sequence
-
-1. Finalize FARMER, MAO, and ADMIN server roles and the approved municipality scope.
-2. Connect actual authentication and sessions. Remove demo entry buttons and constant demo-password handling. Never trust client route guards or browser storage for permissions.
-3. Implement read-only crops, markets, latest verified prices and historical endpoints.
-4. Connect MAO resource mutations and explicit approval/rejection endpoints. Enforce record versioning and audit trails server-side.
-5. Replace sample forecasts with evaluated model outputs and provenance/uncertainty metadata.
-6. Connect cost data, reports and account preferences as approved.
-7. Connect Admin account, security, monitoring and backup operations. Remove prototype-only local snapshot and draft configuration flows.
-8. Add network loading/error/retry states, concurrency handling, pagination, automated integration tests and server-side authorization tests.
-
-## Financial logic
-
-- Revenue = quantity × selling price.
-- Net return = revenue − transport − other expenses.
-- Sample transport = rounded base cost × (0.65 + 0.35 × quantity / 100), with zero transport at zero quantity.
-- Rank markets descending by net return. No distance penalty or hidden score.
-- Only active crops/markets and latest verified prices participate.
-- Calculator transport is editable. Selecting a crop/market or changing quantity refreshes its sample transport estimate. Other expenses remain explicit.
-
-## Persistence and security
-
-Mock data uses `agriprice.mock.v1` in localStorage. Demo sessions use `agriprice.session` in sessionStorage. Snapshots use `agriprice.backup.v1`. These are disposable, browser-local fixtures. No passwords are persisted. Real security requires secure server sessions, hashing, authorization, rate limits and appropriate audit storage. Deployment-level private access and application-level authentication are separate concerns.
+Source records may be entered in their original language. Search terms and filters are query parameters for catalog/price records; personal profile values and credentials belong in request bodies. HTTP logs omit query strings and bodies.

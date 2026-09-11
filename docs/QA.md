@@ -1,52 +1,26 @@
-# Quality assurance
+# Verification record — September 11, 2026
 
-## Build and domain tests
+## Completed
 
-The Vite production build succeeds. Six Node tests cover:
+- Vite production build succeeds; route/chart bundles are split and the original image assets resolve.
+- Prisma schema validation and client generation succeed.
+- Express starts successfully against the isolated database; `/api/health` returns HTTP 200 with API and database available.
+- The supplied SQL migration applies successfully to a disposable PostgreSQL-compatible PGlite instance, accessed by the real Prisma client over the PostgreSQL wire protocol. This verifies the migration/application path in isolation, not a live Supabase migration.
+- 19 backend domain/security unit tests pass: role matrix, origin protection, image validation, monetary arithmetic, ranking, forecast input requirements and result structure.
+- 17 database-backed API workflow cases pass: Farmer-only registration, hashed-password login, Remember me cookie persistence, server role restrictions, required/invalid/oversized/valid crop images, image replacement cleanup, market create/update validation, pending/public price separation, revision approval, rejection notes, financial endpoints, reports, notification ownership, Admin password confirmation, snapshot validation/restore, refresh rotation/replay and suspended-account rejection.
+- The API test harness uses a local HTTP endpoint implementing the Supabase Storage request contract. It tests the real upload adapter and database save/cleanup flow. It does not certify a live Supabase bucket upload.
+- 5 frontend interaction tests pass: registration fields/consent/no role selector, password mismatch, accessible password visibility, exactly three forecast horizon buttons, and correct record action targets in both table/card rendering.
+- Landing and Privacy Policy were inspected in the live browser preview at 1363 px. Each had one main H1, no missing image alt attributes and no page-width overflow. Footer privacy navigation resolved correctly.
+- Source review confirms no active mock repository, localStorage database, sessionStorage authentication, browser alert/confirm/prompt, or frontend service-role/JWT secret values.
+- All eight original crop photographs decode as JPEG; the supplied logo/favicons/apple-touch icon remain in frontend public assets.
 
-- Revenue and both expense categories, including negative net return.
-- Exclusion of pending quotations from public prices.
-- Replacement of the public quotation after approval without duplicate market entries.
-- Market ranking by net return rather than headline price.
-- Exclusion of archived crops and markets from current comparisons.
-- Finite percentage movement when the prior price is zero.
+## Remaining deployment acceptance
 
-## Responsive checks
+1. Authorize the target Supabase project and its dedicated database credentials/schema permissions; configure backend secrets and migrate the live database.
+2. Verify a real Supabase Storage create/replace/delete workflow and seed original images if starter data is desired.
+3. Run the full workflow suite against the deployment's real PostgreSQL version, including simultaneous approval/refresh contention. PGlite is single-process and does not substitute for production concurrency testing.
+4. Validate frontend/API HTTPS origins, cookie behavior, CORS, proxy trust, cloud health checks, scheduled jobs, and startup on the selected Node host.
+5. Complete authenticated visual QA and keyboard/screen-reader acceptance across the requested 320–1920 px matrix. Fluid layouts, mobile cards/drawers/bottom navigation are implemented, but the entire device matrix has not been browser-verified here.
+6. Finalize operator identity/contact, privacy retention and rights-request procedures before production personal-data collection.
 
-A temporary browser inspection harness loaded the real React routes in independently sized viewports. It was excluded from the delivered application. The requested widths were 320, 360, 390, 430, 768, 1024, 1366 and 1920 CSS pixels. The desktop browser's scrollbar occupies up to 15 pixels inside those widths, which also exercises slightly narrower content space.
-
-32 distinct pages were measured at all eight widths, totaling 256 initial checks:
-
-- 14 public/farmer/authentication pages.
-- 8 MAO pages.
-- 10 Admin pages.
-
-Public and Admin pages had no document-level horizontal overflow. The initial 320 px MAO checks exposed a 10 px header overflow; the compact management header was corrected and inspected again. No broken images were found in the measured routes.
-
-Visual screenshot review included the Farmer dashboard at all eight widths, small-phone forms and records, crop cards, the management drawer and edit modal at 320 px, the Admin dashboard at desktop width, and account/access/monitoring screens at mobile width. Screens were inspected in the browser rather than inferred from Tailwind classes.
-
-## Interaction checks
-
-- Farmer price search narrowed the displayed crop cards correctly.
-- MAO crop creation and editing worked, with local persistence and search.
-- A pending Tomato quotation was approved. The Farmer price screen then displayed ₱65.00/kg rather than ₱62.00/kg.
-- Management drawer opened and closed at 320 px; the crop form fit the viewport.
-- Calculator result for 100 kg × ₱49, less ₱120 transport and ₱80 other expenses, displayed ₱4,700.00.
-- Zero quantity replaced the calculation with a useful validation message.
-- Demo role navigation opened the distinct MAO and Admin workspaces.
-
-## Defects resolved
-
-- Corrected an initial JSX compilation error.
-- Corrected the 320 px management header overflow.
-- Replaced unconditional crypto.randomUUID use with a local-HTTP-compatible prototype ID helper.
-- Adjusted compact metadata sizes and made the mobile dashboard expose a crop quotation immediately.
-- Added a visible marker for single-month forecast charts.
-- Updated demo email login to select the matching account rather than the first role account.
-
-- Admin account editing changed a sample account to Suspended. Direct Admin-to-MAO navigation returned to login.
-- Removed an overbroad Recharts width rule; confirmed the single-point desktop chart and six-month mobile chart render visibly, then rechecked chart overflow at all eight widths.
-
-## Limits
-
-Browser width checks are not physical Android/iOS device certification. No real backend, password recovery, API health service, forecast algorithm, security enforcement or production backup was tested because none is connected. The full manual test matrix for every field permutation, long localized text, screen-reader behavior, physical keyboard overlays and real device safe areas should continue during development. Browser-extension metadata errors were separate from the application. A transient development hot-refresh context error was resolved by reloading after source formatting.
+No production-ready certification, live service health, or full accessibility-conformance claim is made by these checks.
